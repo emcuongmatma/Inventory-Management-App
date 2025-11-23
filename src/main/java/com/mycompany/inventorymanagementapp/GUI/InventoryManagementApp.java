@@ -4,6 +4,9 @@
 
 package com.mycompany.inventorymanagementapp.GUI;
 
+import com.mongodb.client.MongoDatabase;
+import config.MongoDBConnection;
+
 /**
  *
  * @author ECMM
@@ -11,6 +14,6 @@ package com.mycompany.inventorymanagementapp.GUI;
 public class InventoryManagementApp {
 
     public static void main(String[] args) {
-        System.out.println("Hello World!");
+       
     }
 }

@@ -1,1 +1,2 @@
 com\mycompany\inventorymanagementapp\GUI\InventoryManagementApp.class
+config\MongoDBConnection.class
