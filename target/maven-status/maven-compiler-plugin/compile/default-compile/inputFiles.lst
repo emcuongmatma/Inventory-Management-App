@@ -1,2 +1,14 @@
+C:\Users\Admin\Documents\NetBeansProjects\Inventory-Management-App\src\main\java\com\mycompany\inventorymanagementapp\DTO\AdminDTO.java
+C:\Users\Admin\Documents\NetBeansProjects\Inventory-Management-App\src\main\java\com\mycompany\inventorymanagementapp\DTO\BrandDTO.java
+C:\Users\Admin\Documents\NetBeansProjects\Inventory-Management-App\src\main\java\com\mycompany\inventorymanagementapp\DTO\CategoryDTO.java
+C:\Users\Admin\Documents\NetBeansProjects\Inventory-Management-App\src\main\java\com\mycompany\inventorymanagementapp\DTO\CustomerDTO.java
+C:\Users\Admin\Documents\NetBeansProjects\Inventory-Management-App\src\main\java\com\mycompany\inventorymanagementapp\DTO\OrderDTO.java
+C:\Users\Admin\Documents\NetBeansProjects\Inventory-Management-App\src\main\java\com\mycompany\inventorymanagementapp\DTO\OrderItemDTO.java
+C:\Users\Admin\Documents\NetBeansProjects\Inventory-Management-App\src\main\java\com\mycompany\inventorymanagementapp\DTO\ProductDTO.java
+C:\Users\Admin\Documents\NetBeansProjects\Inventory-Management-App\src\main\java\com\mycompany\inventorymanagementapp\DTO\ReceiptDTO.java
+C:\Users\Admin\Documents\NetBeansProjects\Inventory-Management-App\src\main\java\com\mycompany\inventorymanagementapp\DTO\ReceiptItemDTO.java
+C:\Users\Admin\Documents\NetBeansProjects\Inventory-Management-App\src\main\java\com\mycompany\inventorymanagementapp\DTO\SupplierDTO.java
 C:\Users\Admin\Documents\NetBeansProjects\Inventory-Management-App\src\main\java\com\mycompany\inventorymanagementapp\GUI\InventoryManagementApp.java
 C:\Users\Admin\Documents\NetBeansProjects\Inventory-Management-App\src\main\java\config\MongoDBConnection.java
+C:\Users\Admin\Documents\NetBeansProjects\Inventory-Management-App\src\main\java\DAO\ProductDAO.java
+C:\Users\Admin\Documents\NetBeansProjects\Inventory-Management-App\src\main\java\utils\OrderStatus.java
