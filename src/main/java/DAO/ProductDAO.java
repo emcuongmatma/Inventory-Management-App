@@ -6,7 +6,10 @@ package DAO;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Filters;
 import static com.mongodb.client.model.Filters.eq;
+import com.mongodb.client.model.Updates;
+import com.mongodb.client.result.UpdateResult;
 import com.mycompany.inventorymanagementapp.DTO.ProductDTO;
 import config.MongoDBConnection;
 import java.util.List;
@@ -59,6 +62,14 @@ public class ProductDAO {
         collection.deleteOne(eq("productCode", productCode));
     }
 
+    public List<ProductDTO> getAll() {
+        List<ProductDTO> list = new ArrayList<>();
+        for (Document doc : collection.find()) {
+            list.add(convert(doc));
+        }
+        return list;
+    }
+
     public List<ProductDTO> findByBrand(String brandCode) {
         List<ProductDTO> list = new ArrayList<>();
         for (Document doc : collection.find(eq("brandCode", brandCode))) {
@@ -67,9 +78,9 @@ public class ProductDAO {
         return list;
     }
 
-    public List<ProductDTO> findByCategory(String brandCode) {
+    public List<ProductDTO> findByCategory(String categoryCode) {
         List<ProductDTO> list = new ArrayList<>();
-        for (Document doc : collection.find(eq("categoryCode", brandCode))) {
+        for (Document doc : collection.find(eq("categoryCode", categoryCode))) {
             list.add(convert(doc));
         }
         return list;
@@ -103,5 +114,36 @@ public class ProductDAO {
         p.setCategoryCode(doc.getString("categoryCode"));
         p.setBrandCode(doc.getString("brandCode"));
         return p;
+    }
+
+    public String getNewProductCode() {
+        String prefix = "PD";
+        long number = collection.countDocuments();
+
+        number++;
+
+        String newNumber = String.format("%03d", number);
+        return prefix + newNumber;
+    }
+
+    public boolean existsByCode(String productCode) {
+        Document doc = collection.find(eq("productCode", productCode)).limit(1).first();
+        return doc != null;
+    }
+
+    public boolean increaseQuantity(String productCode, int qty) {
+        UpdateResult result = collection.updateOne(
+                Filters.eq("productCode", productCode),
+                Updates.inc("quantity", qty)
+        );
+        return (result.getModifiedCount() > 0L);
+    }
+
+    public boolean decreaseQuantity(String productCode, int qty) {
+        Document updated = collection.findOneAndUpdate(
+                Filters.eq("productCode", productCode),
+                Updates.inc("quantity", -qty)
+        );
+        return updated != null;
     }
 }

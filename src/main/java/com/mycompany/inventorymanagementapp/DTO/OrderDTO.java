@@ -5,7 +5,9 @@
 package com.mycompany.inventorymanagementapp.DTO;
 
 import java.util.List;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import utils.OrderStatus;
 
 /**
@@ -13,6 +15,8 @@ import utils.OrderStatus;
  * @author ECMM
  */
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class OrderDTO {
     private Integer userId;
     private Long totalAmount;
