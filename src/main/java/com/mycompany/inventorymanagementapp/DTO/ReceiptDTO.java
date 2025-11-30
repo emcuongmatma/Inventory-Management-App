@@ -8,6 +8,7 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.bson.types.ObjectId;
 /**
  *
  * @author ECMM
@@ -16,7 +17,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReceiptDTO {
-    private Integer _id;
+    private ObjectId _id;
     private String supplierCode;
     private String note;
     private Date receiptDate;

@@ -14,6 +14,7 @@ import com.mycompany.inventorymanagementapp.DTO.ProductDTO;
 import config.MongoDBConnection;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.regex.Pattern;
 import org.bson.Document;
 
 /**
@@ -72,7 +73,7 @@ public class ProductDAO {
 
     public List<ProductDTO> findByBrand(String brandCode) {
         List<ProductDTO> list = new ArrayList<>();
-        for (Document doc : collection.find(eq("brandCode", brandCode))) {
+        for (Document doc : collection.find( Filters.regex("brandCode", Pattern.compile(brandCode, Pattern.CASE_INSENSITIVE)))) {
             list.add(convert(doc));
         }
         return list;
@@ -80,7 +81,7 @@ public class ProductDAO {
 
     public List<ProductDTO> findByCategory(String categoryCode) {
         List<ProductDTO> list = new ArrayList<>();
-        for (Document doc : collection.find(eq("categoryCode", categoryCode))) {
+        for (Document doc : collection.find( Filters.regex("categoryCode", Pattern.compile(categoryCode, Pattern.CASE_INSENSITIVE)))) {
             list.add(convert(doc));
         }
         return list;

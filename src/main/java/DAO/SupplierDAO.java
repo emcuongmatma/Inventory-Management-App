@@ -6,11 +6,12 @@ package DAO;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import static com.mongodb.client.model.Filters.eq;
+import com.mongodb.client.model.Filters;
 import com.mycompany.inventorymanagementapp.DTO.SupplierDTO;
 import config.MongoDBConnection;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 import org.bson.Document;
 
 /**
@@ -37,10 +38,20 @@ public class SupplierDAO {
 
     public List<SupplierDTO> findByName(String name) {
         List<SupplierDTO> list = new ArrayList<>();
-        for (Document doc : collection.find(eq("name", name))) {
+        for (Document doc : collection.find( Filters.regex("name", Pattern.compile(name, Pattern.CASE_INSENSITIVE)))) {
             list.add(convert(doc));
         }
         return list;
+    }
+    
+     public String getNewSupplierCode() {
+        String prefix = "SP";
+        long number = collection.countDocuments();
+
+        number++;
+
+        String newNumber = String.format("%03d", number);
+        return prefix + newNumber;
     }
 
     private SupplierDTO convert(Document doc) {

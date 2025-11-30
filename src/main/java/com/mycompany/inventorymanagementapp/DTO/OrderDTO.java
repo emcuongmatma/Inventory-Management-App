@@ -4,6 +4,7 @@
  */
 package com.mycompany.inventorymanagementapp.DTO;
 
+import java.util.Date;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,9 +19,10 @@ import utils.OrderStatus;
 @NoArgsConstructor
 @AllArgsConstructor
 public class OrderDTO {
-    private Integer userId;
+    private String userId;
     private Long totalAmount;
     private String paymentMethod;
     private OrderStatus status;
+    private Date orderDate;
     private List<OrderItemDTO> items;
 }

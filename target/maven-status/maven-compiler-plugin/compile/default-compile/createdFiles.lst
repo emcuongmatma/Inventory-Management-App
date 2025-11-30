@@ -3,8 +3,10 @@ DAO\CustomerDAO.class
 DAO\ReceiptDAO.class
 com\mycompany\inventorymanagementapp\DTO\AdminDTO.class
 utils\OrderStatus.class
+BUS\CustomerBUS.class
 com\mycompany\inventorymanagementapp\DTO\BrandDTO.class
 DAO\BrandDAO.class
+BUS\CategoryBUS.class
 DAO\CategoryDAO.class
 DAO\ProductDAO.class
 com\mycompany\inventorymanagementapp\DTO\CustomerDTO.class
@@ -14,7 +16,9 @@ BUS\ProductBUS.class
 com\mycompany\inventorymanagementapp\DTO\OrderItemDTO.class
 com\mycompany\inventorymanagementapp\DTO\CategoryDTO.class
 com\mycompany\inventorymanagementapp\GUI\InventoryManagementApp.class
+BUS\BrandBUS.class
 com\mycompany\inventorymanagementapp\DTO\ProductDTO.class
 com\mycompany\inventorymanagementapp\DTO\ReceiptItemDTO.class
 com\mycompany\inventorymanagementapp\DTO\SupplierDTO.class
 DAO\SupplierDAO.class
+DAO\OrderDAO.class

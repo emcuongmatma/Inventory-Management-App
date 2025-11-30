@@ -6,11 +6,9 @@ package DAO;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import static com.mongodb.client.model.Filters.eq;
 import com.mongodb.client.model.Sorts;
 import com.mycompany.inventorymanagementapp.DTO.ReceiptDTO;
 import com.mycompany.inventorymanagementapp.DTO.ReceiptItemDTO;
-import com.mycompany.inventorymanagementapp.DTO.SupplierDTO;
 import config.MongoDBConnection;
 import java.util.ArrayList;
 import java.util.List;

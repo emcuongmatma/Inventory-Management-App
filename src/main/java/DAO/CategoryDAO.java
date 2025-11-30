@@ -68,7 +68,7 @@ public class CategoryDAO {
         return list;
     }
 
-    public String getNewBrandCode() {
+    public String getNewCategoryCode() {
         String prefix = "CT";
         long number = collection.countDocuments();
 

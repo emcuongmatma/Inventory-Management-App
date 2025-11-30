@@ -1,3 +1,6 @@
+C:\Users\Admin\Documents\NetBeansProjects\Inventory-Management-App\src\main\java\BUS\BrandBUS.java
+C:\Users\Admin\Documents\NetBeansProjects\Inventory-Management-App\src\main\java\BUS\CategoryBUS.java
+C:\Users\Admin\Documents\NetBeansProjects\Inventory-Management-App\src\main\java\BUS\CustomerBUS.java
 C:\Users\Admin\Documents\NetBeansProjects\Inventory-Management-App\src\main\java\BUS\ProductBUS.java
 C:\Users\Admin\Documents\NetBeansProjects\Inventory-Management-App\src\main\java\com\mycompany\inventorymanagementapp\DTO\AdminDTO.java
 C:\Users\Admin\Documents\NetBeansProjects\Inventory-Management-App\src\main\java\com\mycompany\inventorymanagementapp\DTO\BrandDTO.java
@@ -14,6 +17,7 @@ C:\Users\Admin\Documents\NetBeansProjects\Inventory-Management-App\src\main\java
 C:\Users\Admin\Documents\NetBeansProjects\Inventory-Management-App\src\main\java\DAO\BrandDAO.java
 C:\Users\Admin\Documents\NetBeansProjects\Inventory-Management-App\src\main\java\DAO\CategoryDAO.java
 C:\Users\Admin\Documents\NetBeansProjects\Inventory-Management-App\src\main\java\DAO\CustomerDAO.java
+C:\Users\Admin\Documents\NetBeansProjects\Inventory-Management-App\src\main\java\DAO\OrderDAO.java
 C:\Users\Admin\Documents\NetBeansProjects\Inventory-Management-App\src\main\java\DAO\ProductDAO.java
 C:\Users\Admin\Documents\NetBeansProjects\Inventory-Management-App\src\main\java\DAO\ReceiptDAO.java
 C:\Users\Admin\Documents\NetBeansProjects\Inventory-Management-App\src\main\java\DAO\SupplierDAO.java
