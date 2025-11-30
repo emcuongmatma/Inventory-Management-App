@@ -3,11 +3,9 @@
  */
 package com.mycompany.inventorymanagementapp.GUI;
 
-import DAO.ProductDAO;
-import com.mongodb.client.MongoDatabase;
-import com.mycompany.inventorymanagementapp.DTO.ProductDTO;
-import config.MongoDBConnection;
-import java.util.List;
+import BUS.BrandBUS;
+import BUS.CategoryBUS;
+import BUS.CustomerBUS;
 
 /**
  *
@@ -16,8 +14,13 @@ import java.util.List;
 public class InventoryManagementApp {
 
     public static void main(String[] args) {
-//        ProductDAO productDAO = new ProductDAO();
-//        List<ProductDTO> products = productDAO.findByCodeOrName("lenovo");
-//        System.out.println(products);
+//        testBrand
+//          BrandBUS.getInstance().deleteBrand("BR001");
+//          System.out.println(BrandBUS.getInstance().findBrandByCodeOrName("00"));
+//          category
+//            CategoryBUS.getInstance().addNewCategory("Laptop");
+//        System.out.println(CategoryBUS.getInstance().getAllCategory());
+//            CustomerBUS.getInstance().addNewUser("EM Cuong Mat Ma", "AHIHI", "757887");
+//            System.out.println(CustomerBUS.getInstance().findByPhone("757887"));
     }
 }
