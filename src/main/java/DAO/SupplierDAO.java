@@ -19,6 +19,7 @@ import org.bson.Document;
  * @author ECMM
  */
 public class SupplierDAO {
+
     private final MongoCollection<Document> collection;
 
     public SupplierDAO() {
@@ -36,15 +37,28 @@ public class SupplierDAO {
         collection.insertOne(doc);
     }
 
-    public List<SupplierDTO> findByName(String name) {
+    public List<SupplierDTO> findByNameOrCode(String keyword) {
         List<SupplierDTO> list = new ArrayList<>();
-        for (Document doc : collection.find( Filters.regex("name", Pattern.compile(name, Pattern.CASE_INSENSITIVE)))) {
+        Document filter = new Document("$or", List.of(
+                new Document("supplierCode", new Document("$regex", keyword).append("$options", "i")),
+                new Document("name", new Document("$regex", keyword).append("$options", "i"))
+        ));
+
+        for (Document doc : collection.find(filter)) {
+            list.add(convert(doc));
+        }
+        return list;
+    }
+
+    public List<SupplierDTO> getAll() {
+        List<SupplierDTO> list = new ArrayList<>();
+        for (Document doc : collection.find()) {
             list.add(convert(doc));
         }
         return list;
     }
     
-     public String getNewSupplierCode() {
+    public String getNewSupplierCode() {
         String prefix = "SP";
         long number = collection.countDocuments();
 
