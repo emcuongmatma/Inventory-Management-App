@@ -6,26 +6,37 @@ package DAO;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import static com.mongodb.client.model.Filters.eq;
 import com.mongodb.client.model.Sorts;
 import com.mycompany.inventorymanagementapp.DTO.OrderDTO;
 import config.MongoDBConnection;
 import java.util.List;
 import java.util.ArrayList;
+import org.bson.Document;
 
 /**
  *
  * @author ECMM
  */
 public class OrderDAO {
+
     private final MongoCollection<OrderDTO> collection;
 
     public OrderDAO() {
         MongoDatabase db = MongoDBConnection.getDatabase();
-        this.collection = db.getCollection("orders",OrderDTO.class);
+        this.collection = db.getCollection("orders", OrderDTO.class);
     }
 
     public void insert(OrderDTO order) {
         collection.insertOne(order);
+    }
+
+    public List<OrderDTO> findByUserId(String userId) {
+        List<OrderDTO> list = new ArrayList<>();
+        for (OrderDTO order : collection.find(eq("userId", userId)).sort(Sorts.descending("orderDate"))) {
+            list.add(order);
+        }
+        return list;
     }
 
     public List<OrderDTO> getAll() {

@@ -1,7 +1,10 @@
 C:\Users\Admin\Documents\NetBeansProjects\Inventory-Management-App\src\main\java\BUS\BrandBUS.java
 C:\Users\Admin\Documents\NetBeansProjects\Inventory-Management-App\src\main\java\BUS\CategoryBUS.java
 C:\Users\Admin\Documents\NetBeansProjects\Inventory-Management-App\src\main\java\BUS\CustomerBUS.java
+C:\Users\Admin\Documents\NetBeansProjects\Inventory-Management-App\src\main\java\BUS\OrderBUS.java
 C:\Users\Admin\Documents\NetBeansProjects\Inventory-Management-App\src\main\java\BUS\ProductBUS.java
+C:\Users\Admin\Documents\NetBeansProjects\Inventory-Management-App\src\main\java\BUS\ReceiptBUS.java
+C:\Users\Admin\Documents\NetBeansProjects\Inventory-Management-App\src\main\java\BUS\SupplierBUS.java
 C:\Users\Admin\Documents\NetBeansProjects\Inventory-Management-App\src\main\java\com\mycompany\inventorymanagementapp\DTO\AdminDTO.java
 C:\Users\Admin\Documents\NetBeansProjects\Inventory-Management-App\src\main\java\com\mycompany\inventorymanagementapp\DTO\BrandDTO.java
 C:\Users\Admin\Documents\NetBeansProjects\Inventory-Management-App\src\main\java\com\mycompany\inventorymanagementapp\DTO\CategoryDTO.java

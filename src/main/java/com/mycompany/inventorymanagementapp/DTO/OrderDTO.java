@@ -20,7 +20,7 @@ import utils.OrderStatus;
 @AllArgsConstructor
 public class OrderDTO {
     private String userId;
-    private Long totalAmount;
+    private Double totalAmount;
     private String paymentMethod;
     private OrderStatus status;
     private Date orderDate;
