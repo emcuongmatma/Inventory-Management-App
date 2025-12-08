@@ -16,7 +16,6 @@ import java.util.List;
 
 public class ProductDialog extends JDialog {
     private JTextField txtCode, txtName, txtPrice;
-    // Bỏ JTextField txtQty
     
     private JComboBox<BrandItem> cbBrand;
     private JComboBox<CategoryItem> cbCategory;
@@ -24,26 +23,23 @@ public class ProductDialog extends JDialog {
     private boolean isSuccess = false;
     private ProductDTO productEdit;
 
-    // Màu sắc chủ đạo
     private final Color COLOR_SUCCESS = new Color(46, 204, 113);
     private final Color COLOR_DANGER = new Color(231, 76, 60);
 
     public ProductDialog(JFrame parent, String title, ProductDTO product) {
         super(parent, title, true);
         this.productEdit = product;
-        setSize(450, 500); // Giảm chiều cao vì bớt 1 trường
+        setSize(450, 500); 
         setLocationRelativeTo(parent);
         setLayout(new BorderLayout());
         getContentPane().setBackground(Color.WHITE);
 
-        // --- TITLE ---
         JLabel lblTitle = new JLabel(title.toUpperCase(), JLabel.CENTER);
         lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 20));
         lblTitle.setForeground(new Color(44, 62, 80));
         lblTitle.setBorder(new EmptyBorder(20, 0, 10, 0));
         add(lblTitle, BorderLayout.NORTH);
 
-        // --- FORM PANEL ---
         JPanel pForm = new JPanel();
         pForm.setLayout(new BoxLayout(pForm, BoxLayout.Y_AXIS));
         pForm.setBackground(Color.WHITE);
@@ -56,19 +52,17 @@ public class ProductDialog extends JDialog {
         
         txtName = new JTextField();
         txtPrice = new JTextField();
-        // txtQty = new JTextField(); // Xóa
+    
         
         cbBrand = new JComboBox<>();
         cbCategory = new JComboBox<>();
         
-        // Style Components
         styleControl(txtCode);
         styleControl(txtName);
         styleControl(txtPrice);
         styleControl(cbBrand);
         styleControl(cbCategory);
 
-        // --- LOAD DATA COMBOBOX ---
         List<BrandDTO> brands = BrandBUS.getInstance().getAllBrand();
         if(brands != null) {
             for(BrandDTO b : brands) cbBrand.addItem(new BrandItem(b.getBrandCode(), b.getName()));
@@ -79,12 +73,11 @@ public class ProductDialog extends JDialog {
             for(CategoryDTO c : cats) cbCategory.addItem(new CategoryItem(c.getCategoryCode(), c.getName()));
         }
 
-        // --- SET VALUES ---
         if(product != null) {
             txtCode.setText(product.getProductCode());
             txtName.setText(product.getName());
             txtPrice.setText(String.valueOf(product.getPrice()));
-            // Không set số lượng lên form nữa
+
             
             setSelectedBrand(product.getBrandCode());
             setSelectedCategory(product.getCategoryCode());
@@ -95,7 +88,6 @@ public class ProductDialog extends JDialog {
             txtCode.setFont(new Font("Segoe UI", Font.ITALIC, 13));
         }
 
-        // Add to Panel
         pForm.add(createFormGroup("Mã Sản Phẩm:", txtCode));
         pForm.add(Box.createVerticalStrut(10));
         pForm.add(createFormGroup("Tên Sản Phẩm:", txtName));
@@ -109,11 +101,10 @@ public class ProductDialog extends JDialog {
         
         pForm.add(Box.createVerticalStrut(10));
         pForm.add(createFormGroup("Đơn Giá Niêm Yết (VNĐ):", txtPrice));
-        // pForm.add(createFormGroup("Số Lượng:", txtQty)); // Bỏ dòng này
+
 
         add(pForm, BorderLayout.CENTER);
 
-        // --- BUTTON PANEL ---
         JPanel pBtn = new JPanel(new FlowLayout(FlowLayout.RIGHT, 15, 15));
         pBtn.setBackground(new Color(245, 247, 250));
         pBtn.setBorder(new EmptyBorder(5, 0, 5, 20));
@@ -125,7 +116,7 @@ public class ProductDialog extends JDialog {
         pBtn.add(btnCancel);
         add(pBtn, BorderLayout.SOUTH);
 
-        // --- EVENTS ---
+
         btnSave.addActionListener(e -> {
             try {
                 if(txtName.getText().trim().isEmpty()) {
@@ -145,12 +136,11 @@ public class ProductDialog extends JDialog {
                 dto.setBrandCode(selectedBrand.code);
                 dto.setCategoryCode(selectedCat.code);
                 dto.setPrice(Integer.parseInt(txtPrice.getText()));
-                
-                // Set mặc định số lượng
+
                 if(productEdit != null) {
-                    dto.setQuantity(productEdit.getQuantity()); // Giữ nguyên số lượng cũ nếu đang sửa
+                    dto.setQuantity(productEdit.getQuantity()); 
                 } else {
-                    dto.setQuantity(0); // Mới tạo thì bằng 0
+                    dto.setQuantity(0);
                 }
                 
                 boolean ok = (productEdit == null) ? ProductBUS.getInstance().addProduct(dto) : true;
@@ -174,7 +164,7 @@ public class ProductDialog extends JDialog {
 
     public boolean isSuccess() { return isSuccess; }
 
-    // Helper Classes & Methods (Giữ nguyên)
+ 
     class BrandItem {
         String code, name;
         public BrandItem(String code, String name) { this.code = code; this.name = name; }

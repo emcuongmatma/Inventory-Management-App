@@ -1,7 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package DAO;
 
 import com.mongodb.client.MongoCollection;
@@ -12,10 +9,7 @@ import config.MongoDBConnection;
 import java.util.List;
 import java.util.ArrayList;
 
-/**
- *
- * @author ECMM
- */
+
 public class OrderDAO {
     private final MongoCollection<OrderDTO> collection;
 

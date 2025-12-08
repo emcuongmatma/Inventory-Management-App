@@ -3,7 +3,7 @@ package DAO;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
-import com.mongodb.client.model.Sorts; // QUAN TRỌNG: Import cái này
+import com.mongodb.client.model.Sorts; 
 import static com.mongodb.client.model.Filters.eq;
 import com.mongodb.client.model.Updates;
 import com.mongodb.client.result.UpdateResult;
@@ -27,7 +27,7 @@ public class ProductDAO {
         Document doc = new Document()
                 .append("productCode", p.getProductCode())
                 .append("name", p.getName())
-                .append("description", p.getDescription()) // Nếu null thì MongoDB tự bỏ qua hoặc lưu null
+                .append("description", p.getDescription()) 
                 .append("quantity", p.getQuantity())
                 .append("price", p.getPrice())
                 .append("imageUrl", p.getImageUrl())
@@ -63,8 +63,6 @@ public class ProductDAO {
         }
         return list;
     }
-
-    // --- CÁC HÀM TÌM KIẾM ---
     public List<ProductDTO> findByBrand(String brandCode) {
         List<ProductDTO> list = new ArrayList<>();
         for (Document doc : collection.find(eq("brandCode", brandCode))) {
@@ -94,24 +92,20 @@ public class ProductDAO {
         return list;
     }
 
-    // --- HÀM SINH MÃ TỰ ĐỘNG CHUẨN XÁC ---
     public String getNewProductCode() {
         try {
-            // Lấy sản phẩm có mã lớn nhất (Sắp xếp giảm dần theo productCode)
             Document doc = collection.find().sort(Sorts.descending("productCode")).first();
             
             if (doc == null) {
-                return "PD001"; // Nếu chưa có SP nào
+                return "PD001";
             }
             
             String lastCode = doc.getString("productCode");
-            // Tách phần số: PD005 -> 5. Bỏ 2 ký tự đầu "PD"
             int number = Integer.parseInt(lastCode.substring(2));
             number++;
             
             return String.format("PD%03d", number);
         } catch (Exception e) {
-            // Fallback nếu dữ liệu cũ sai định dạng
             return "PD" + System.currentTimeMillis();
         }
     }
@@ -121,7 +115,6 @@ public class ProductDAO {
         p.setProductCode(doc.getString("productCode"));
         p.setName(doc.getString("name"));
         p.setDescription(doc.getString("description"));
-        // Sử dụng getInteger(key, defaultValue) để tránh lỗi null
         p.setQuantity(doc.getInteger("quantity", 0));
         p.setPrice(doc.getInteger("price", 0));
         p.setImageUrl(doc.getString("imageUrl"));

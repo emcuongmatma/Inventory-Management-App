@@ -16,7 +16,6 @@ public class AdminDAO {
         this.collection = db.getCollection("admins"); // Tên collection là 'admins'
     }
 
-    // Kiểm tra đăng nhập
     public AdminDTO checkLogin(String username, String password) {
         Document doc = collection.find(and(
                 eq("userName", username),

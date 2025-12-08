@@ -17,23 +17,21 @@ public class CategoryBUS {
         return categoryDAO.getAll();
     }
 
-    // Sửa: Trả về boolean
+    
     public boolean addNewCategory(String categoryName) {
-        // 1. Kiểm tra trùng tên
+   
         List<CategoryDTO> list = categoryDAO.findByCodeOrName(categoryName);
         for (CategoryDTO c : list) {
             if (c.getName().equalsIgnoreCase(categoryName)) {
-                return false; // Đã tồn tại
+                return false; 
             }
         }
 
-        // 2. Thêm mới
         CategoryDTO category = new CategoryDTO(categoryDAO.getNewCategoryCode(), categoryName);
         categoryDAO.insert(category);
         return true;
     }
-    
-    // Sửa: Trả về boolean
+
     public boolean deleteCategory(String categoryCode){
         try {
             categoryDAO.delete(categoryCode);

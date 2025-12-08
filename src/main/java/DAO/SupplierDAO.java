@@ -14,10 +14,6 @@ import java.util.List;
 import java.util.regex.Pattern;
 import org.bson.Document;
 
-/**
- *
- * @author ECMM
- */
 public class SupplierDAO {
     private final MongoCollection<Document> collection;
 

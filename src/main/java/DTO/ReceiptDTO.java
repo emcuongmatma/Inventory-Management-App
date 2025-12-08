@@ -5,7 +5,7 @@ import java.util.List;
 import org.bson.types.ObjectId;
 
 public class ReceiptDTO {
-    private ObjectId _id; // Định danh của MongoDB
+    private ObjectId _id; 
     private String supplierCode;
     private String note;
     private Date receiptDate;
@@ -22,8 +22,6 @@ public class ReceiptDTO {
         this.items = items;
     }
 
-    // Getters & Setters
-    // Lưu ý: Tên hàm get_id để khớp với GUI
     public ObjectId get_id() { return _id; }
     public void set_id(ObjectId _id) { this._id = _id; }
 

@@ -42,22 +42,18 @@ public class ReceiptBUS {
         return receiptDAO.getAll();
     }
 
-    // Hàm này dùng cho ReceiptGUI (Tìm 1 ngày cụ thể)
     public List<ReceiptDTO> getByDate(Date date) {
         Date start = setTime(date, 0, 0, 0);
         Date end = setTime(date, 23, 59, 59);
         return receiptDAO.findByDateRange(start, end);
     }
 
-    // --- BẠN ĐANG THIẾU HÀM NÀY CHO STARTSGUI ---
-    // Hàm này dùng cho StartsGUI (Thống kê từ ngày A -> ngày B)
     public List<ReceiptDTO> filterByDate(Date start, Date end) {
         Date realStart = setTime(start, 0, 0, 0);
         Date realEnd = setTime(end, 23, 59, 59);
         return receiptDAO.findByDateRange(realStart, realEnd);
     }
 
-    // Hàm phụ trợ để set giờ/phút/giây (Dùng chung cho gọn code)
     private Date setTime(Date date, int h, int m, int s) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);

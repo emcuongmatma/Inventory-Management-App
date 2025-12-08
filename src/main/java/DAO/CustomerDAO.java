@@ -28,14 +28,12 @@ public class CustomerDAO {
 
     public List<CustomerDTO> findByPhone(String phone) {
         List<CustomerDTO> list = new ArrayList<>();
-        // Tìm chính xác hoặc gần đúng tùy nhu cầu (ở đây tìm chính xác)
         for (Document doc : collection.find(eq("phone", phone))) {
             list.add(convert(doc));
         }
         return list;
     }
-    
-    // Hàm mới: Lấy tất cả khách hàng
+
     public List<CustomerDTO> getAll() {
         List<CustomerDTO> list = new ArrayList<>();
         for (Document doc : collection.find()) {

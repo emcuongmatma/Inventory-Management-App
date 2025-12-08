@@ -23,13 +23,11 @@ public class ExportDAO {
     }
 public List<ExportDTO> findByDateRange(Date start, Date end) {
     List<ExportDTO> list = new ArrayList<>();
-    // Lọc: exportDate >= start AND exportDate <= end
     Bson filter = Filters.and(
         Filters.gte("exportDate", start),
         Filters.lte("exportDate", end)
     );
 
-    // Sắp xếp ngày gần nhất lên đầu
     for (Document doc : collection.find(filter).sort(Sorts.descending("exportDate"))) {
         list.add(convert(doc));
     }
@@ -82,39 +80,26 @@ public List<ExportDTO> findByDateRange(Date start, Date end) {
         }
         return list;
     }
-    // ==========================================================
-    // BẠN ĐANG THIẾU ĐOẠN CODE NÀY TRONG ExportDAO.java
-    // ==========================================================
-    
+
     private ExportDTO convert(Document doc) {
         ExportDTO e = new ExportDTO();
-        
-        // 1. Lấy ID
         e.set_id(doc.getObjectId("_id"));
-        
-        // 2. Lấy thông tin cơ bản
+
         e.setCustomerCode(doc.getString("customerCode"));
         e.setNote(doc.getString("note"));
         e.setExportDate(doc.getDate("exportDate"));
-        
-        // 3. Lấy tổng tiền (Xử lý null để tránh lỗi)
-        // Lưu ý: MongoDB đôi khi lưu là Integer, đôi khi Double, nên dùng getDouble an toàn hơn
         Double total = doc.getDouble("totalPrice");
         e.setTotalPrice(total != null ? total : 0.0);
 
-        // 4. Lấy danh sách sản phẩm (items)
-        // Vì ExportDTO dùng chung ReceiptItemDTO cho chi tiết sp
         List<org.bson.Document> itemDocs = (List<org.bson.Document>) doc.get("items");
         if (itemDocs != null) {
             List<DTO.ReceiptItemDTO> items = new java.util.ArrayList<>();
             for (org.bson.Document itemDoc : itemDocs) {
-                // Đảm bảo tên trường khớp với lúc bạn insert (save)
-                // Giả sử lúc lưu bạn dùng: productCode, name, quantity, price
                 items.add(new DTO.ReceiptItemDTO(
                     itemDoc.getString("productCode"),
                     itemDoc.getString("name"),
                     itemDoc.getInteger("quantity", 0),
-                    itemDoc.getInteger("price", 0) // Hoặc getInteger("unitPrice") tùy lúc lưu
+                    itemDoc.getInteger("price", 0) 
                 ));
             }
             e.setItems(items);

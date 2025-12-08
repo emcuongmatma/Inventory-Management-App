@@ -15,19 +15,19 @@ public class ExportBUS {
     }
 
     public boolean addNewExport(String customerCode, String note, List<ReceiptItemDTO> items) {
-        // 1. Tính tổng tiền
+       
         double total = 0;
         for (ReceiptItemDTO item : items) {
             total += item.getQuantity() * item.getUnitPrice();
         }
 
-        // 2. Trừ tồn kho (Quan trọng)
+    
         for (ReceiptItemDTO item : items) {
             boolean result = ProductBUS.getInstance().decreaseStock(item.getProductCode(), item.getQuantity());
-            if (!result) return false; // Nếu không đủ hàng thì hủy
+            if (!result) return false; 
         }
 
-        // 3. Lưu hóa đơn
+        
         ExportDTO export = new ExportDTO(null, customerCode, note, new Date(), total, items);
         exportDAO.insert(export);
         return true;
@@ -46,7 +46,6 @@ public class ExportBUS {
     return exportDAO.findByDateRange(realStart, realEnd);
 }
 
-// Hàm phụ trợ set thời gian (Copy từ ReceiptBUS sang nếu chưa có)
 private Date setTime(Date date, int h, int m, int s) {
     Calendar cal = Calendar.getInstance();
     cal.setTime(date);

@@ -1,13 +1,7 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package DTO;
 
-/**
- *
- * @author ECMM
- */
+
 public class SupplierDTO {
     // Các trường dữ liệu
     private String supplierCode;
@@ -16,11 +10,10 @@ public class SupplierDTO {
     private String address;
     private String phone;
 
-    // 1. Constructor rỗng
+ 
     public SupplierDTO() {
     }
 
-    // 2. Constructor đầy đủ
     public SupplierDTO(String supplierCode, String name, String email, String address, String phone) {
         this.supplierCode = supplierCode;
         this.name = name;
@@ -29,7 +22,6 @@ public class SupplierDTO {
         this.phone = phone;
     }
 
-    // 3. Getters
     public String getSupplierCode() {
         return supplierCode;
     }
@@ -50,7 +42,6 @@ public class SupplierDTO {
         return phone;
     }
 
-    // 4. Setters
     public void setSupplierCode(String supplierCode) {
         this.supplierCode = supplierCode;
     }
@@ -71,7 +62,7 @@ public class SupplierDTO {
         this.phone = phone;
     }
     
-    // Helper để hiển thị tên trong ComboBox (nếu cần dùng)
+
     @Override
     public String toString() {
         return this.name;

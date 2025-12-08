@@ -9,7 +9,6 @@ import javax.swing.*;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
-import javax.swing.border.MatteBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
@@ -19,72 +18,84 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ReceiptCreateDialog extends JDialog {
+
     private JComboBox<String> cbProduct;
     private JTextField txtQty, txtPrice, txtSupplier, txtNote;
     private DefaultTableModel modelCart;
     private JTable tableCart;
+    private JLabel lblTotal;
+    private JButton btnAdd, btnSave;
+
     private List<ReceiptItemDTO> cart = new ArrayList<>();
     private List<ProductDTO> products;
-    private JLabel lblTotal;
-    private DecimalFormat df = new DecimalFormat("###,###");
+    private final DecimalFormat df = new DecimalFormat("###,###");
     private boolean isSuccess = false;
 
-    // Màu sắc chủ đạo
-    private final Color COLOR_PRIMARY = new Color(52, 152, 219);
-    private final Color COLOR_SUCCESS = new Color(46, 204, 113);
-    private final Color COLOR_DANGER = new Color(231, 76, 60);
-    private final Color COLOR_BG = new Color(245, 247, 250);
+    private static final Color COLOR_PRIMARY = new Color(52, 152, 219);
+    private static final Color COLOR_SUCCESS = new Color(46, 204, 113);
+    private static final Color COLOR_DANGER = new Color(231, 76, 60);
+    private static final Color COLOR_BG = new Color(245, 247, 250);
+    private static final Color COLOR_TEXT = new Color(100, 100, 100);
+    private static final Font FONT_BOLD = new Font("Segoe UI", Font.BOLD, 14);
+    private static final Font FONT_PLAIN = new Font("Segoe UI", Font.PLAIN, 14);
 
     public ReceiptCreateDialog(JFrame parent) {
         super(parent, "Tạo Phiếu Nhập Kho", true);
-        setSize(1100, 650); // Tăng kích thước để thoáng hơn
-        setLocationRelativeTo(parent);
+        initUI();
+        initEvents();
+        loadProducts();
+    }
+
+    private void initUI() {
+        setSize(1100, 650);
+        setLocationRelativeTo(getParent());
         setLayout(new BorderLayout());
         getContentPane().setBackground(COLOR_BG);
 
-        // --- LEFT PANEL: FORM NHẬP LIỆU ---
+        add(createLeftPanel(), BorderLayout.WEST);
+        add(createRightPanel(), BorderLayout.CENTER);
+    }
+
+    private JPanel createLeftPanel() {
         JPanel pnlLeft = new JPanel();
         pnlLeft.setLayout(new BoxLayout(pnlLeft, BoxLayout.Y_AXIS));
         pnlLeft.setBorder(new EmptyBorder(20, 20, 20, 20));
         pnlLeft.setBackground(Color.WHITE);
         pnlLeft.setPreferredSize(new Dimension(380, 0));
 
-        // Header Left
-        JLabel lblHeaderLeft = new JLabel("THÔNG TIN NHẬP", JLabel.LEFT);
-        lblHeaderLeft.setFont(new Font("Segoe UI", Font.BOLD, 18));
-        lblHeaderLeft.setForeground(COLOR_PRIMARY);
-        lblHeaderLeft.setAlignmentX(Component.LEFT_ALIGNMENT);
-        
-        // Inputs
+        JLabel lblHeader = new JLabel("THÔNG TIN NHẬP", JLabel.LEFT);
+        lblHeader.setFont(new Font("Segoe UI", Font.BOLD, 18));
+        lblHeader.setForeground(COLOR_PRIMARY);
+        lblHeader.setAlignmentX(Component.LEFT_ALIGNMENT);
+
         txtSupplier = new JTextField();
         txtNote = new JTextField();
         cbProduct = new JComboBox<>();
         txtPrice = new JTextField();
         txtQty = new JTextField();
-        
+
         styleControl(txtSupplier);
         styleControl(txtNote);
         styleControl(cbProduct);
         styleControl(txtPrice);
         styleControl(txtQty);
 
-        JButton btnAdd = createBtn("Thêm vào danh sách", COLOR_SUCCESS);
+        btnAdd = createBtn("Thêm vào danh sách", COLOR_SUCCESS);
         btnAdd.setAlignmentX(Component.LEFT_ALIGNMENT);
         btnAdd.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
 
-        // Add components to Left Panel
-        pnlLeft.add(lblHeaderLeft);
+        pnlLeft.add(lblHeader);
         pnlLeft.add(Box.createVerticalStrut(20));
         pnlLeft.add(createInputGroup("Nhà Cung Cấp:", txtSupplier));
         pnlLeft.add(Box.createVerticalStrut(10));
         pnlLeft.add(createInputGroup("Ghi Chú:", txtNote));
         pnlLeft.add(Box.createVerticalStrut(20));
-        
+
         JSeparator sep = new JSeparator();
         sep.setMaximumSize(new Dimension(Integer.MAX_VALUE, 1));
         pnlLeft.add(sep);
         pnlLeft.add(Box.createVerticalStrut(20));
-        
+
         pnlLeft.add(createInputGroup("Chọn Sản Phẩm:", cbProduct));
         pnlLeft.add(Box.createVerticalStrut(10));
         pnlLeft.add(createInputGroup("Đơn Giá Nhập (VND):", txtPrice));
@@ -93,30 +104,36 @@ public class ReceiptCreateDialog extends JDialog {
         pnlLeft.add(Box.createVerticalStrut(25));
         pnlLeft.add(btnAdd);
 
-        // --- RIGHT PANEL: TABLE & TOTAL ---
+        return pnlLeft;
+    }
+
+    private JPanel createRightPanel() {
         JPanel pnlRight = new JPanel(new BorderLayout(0, 15));
         pnlRight.setBorder(new EmptyBorder(20, 0, 20, 20));
         pnlRight.setBackground(COLOR_BG);
 
-        // Table
-        modelCart = new DefaultTableModel(new String[]{"Mã SP", "Tên Sản Phẩm", "SL", "Đơn Giá", "Thành Tiền"}, 0);
+        modelCart = new DefaultTableModel(new String[]{"Mã SP", "Tên Sản Phẩm", "SL", "Đơn Giá", "Thành Tiền"}, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
         tableCart = new JTable(modelCart);
         styleTable(tableCart);
-        
+
         JScrollPane scrollPane = new JScrollPane(tableCart);
         scrollPane.getViewport().setBackground(Color.WHITE);
         scrollPane.setBorder(new LineBorder(new Color(200, 200, 200)));
 
-        // Bottom Right (Total + Save Button)
         JPanel pnlBotRight = new JPanel(new BorderLayout());
         pnlBotRight.setBackground(COLOR_BG);
-        
+
         lblTotal = new JLabel("Tổng tiền: 0 VND", SwingConstants.RIGHT);
         lblTotal.setFont(new Font("Segoe UI", Font.BOLD, 20));
         lblTotal.setForeground(COLOR_DANGER);
         lblTotal.setBorder(new EmptyBorder(0, 0, 10, 0));
 
-        JButton btnSave = createBtn("LƯU PHIẾU & NHẬP KHO", COLOR_PRIMARY);
+        btnSave = createBtn("LƯU PHIẾU & NHẬP KHO", COLOR_PRIMARY);
         btnSave.setPreferredSize(new Dimension(200, 50));
         btnSave.setFont(new Font("Segoe UI", Font.BOLD, 16));
 
@@ -126,116 +143,102 @@ public class ReceiptCreateDialog extends JDialog {
         pnlRight.add(scrollPane, BorderLayout.CENTER);
         pnlRight.add(pnlBotRight, BorderLayout.SOUTH);
 
-        // --- ADD TO DIALOG ---
-        add(pnlLeft, BorderLayout.WEST);
-        add(pnlRight, BorderLayout.CENTER);
-
-        // ====================================================================
-        // === LOGIC XỬ LÝ ===
-        // ====================================================================
-        
-        loadProducts();
-
-        // 1. Logic Thêm vào giỏ
-        btnAdd.addActionListener(e -> {
-            try {
-                if(cbProduct.getSelectedIndex() < 0) return;
-                
-                String itemStr = cbProduct.getSelectedItem().toString();
-                // Giả định format: "CODE - Name" (VD: SP001 - iPhone 15)
-                String[] parts = itemStr.split(" - ", 2);
-                String code = parts[0];
-                String name = parts.length > 1 ? parts[1] : code;
-                
-                String qtyStr = txtQty.getText().trim();
-                String priceStr = txtPrice.getText().trim();
-
-                if(qtyStr.isEmpty() || priceStr.isEmpty()) {
-                    JOptionPane.showMessageDialog(this, "Vui lòng nhập đủ số lượng và giá!");
-                    return;
-                }
-
-                int qty = Integer.parseInt(qtyStr);
-                int price = Integer.parseInt(priceStr);
-
-                if(qty <= 0 || price < 0) {
-                    JOptionPane.showMessageDialog(this, "Số lượng phải > 0 và giá >= 0");
-                    return;
-                }
-                
-                // Kiểm tra xem sản phẩm đã có trong giỏ chưa -> Cộng dồn
-                boolean exists = false;
-                for(ReceiptItemDTO item : cart) {
-                    if(item.getProductCode().equals(code)) {
-                        item.setQuantity(item.getQuantity() + qty);
-                        item.setUnitPrice(price); // Cập nhật giá mới nhất
-                        exists = true;
-                        break;
-                    }
-                }
-                
-                if(!exists) {
-                    cart.add(new ReceiptItemDTO(code, name, qty, price));
-                }
-
-                updateTable();
-                
-                // Reset input để nhập tiếp cho nhanh
-                txtQty.setText("");
-                txtPrice.setText("");
-                txtQty.requestFocus(); // Focus lại ô số lượng
-                
-            } catch(NumberFormatException ex) {
-                JOptionPane.showMessageDialog(this, "Vui lòng nhập số hợp lệ!");
-            } catch(Exception ex) {
-                ex.printStackTrace();
-                JOptionPane.showMessageDialog(this, "Lỗi: " + ex.getMessage());
-            }
-        });
-
-        // 2. Logic Lưu phiếu
-        btnSave.addActionListener(e -> {
-            if(cart.isEmpty()) { 
-                JOptionPane.showMessageDialog(this, "Danh sách nhập hàng đang trống!"); 
-                return; 
-            }
-            if(txtSupplier.getText().trim().isEmpty()) { 
-                JOptionPane.showMessageDialog(this, "Vui lòng nhập tên Nhà Cung Cấp!"); 
-                txtSupplier.requestFocus();
-                return; 
-            }
-            
-            int confirm = JOptionPane.showConfirmDialog(this, 
-                "Xác nhận nhập kho " + cart.size() + " mặt hàng?", 
-                "Xác nhận", JOptionPane.YES_NO_OPTION);
-                
-            if(confirm == JOptionPane.YES_OPTION) {
-                // Gọi BUS: BUS sẽ lo việc tạo phiếu VÀ tăng tồn kho (đã sửa ở bước trước)
-                boolean result = ReceiptBUS.getInstance().addNewReceipt(
-                    txtSupplier.getText().trim(), 
-                    txtNote.getText().trim(), 
-                    cart
-                );
-                
-                if(result) {
-                    JOptionPane.showMessageDialog(this, "Nhập kho thành công!");
-                    isSuccess = true;
-                    dispose();
-                } else {
-                    JOptionPane.showMessageDialog(this, "Lỗi khi lưu phiếu! Vui lòng kiểm tra lại.");
-                }
-            }
-        });
+        return pnlRight;
     }
 
-    // ====================================================================
-    // === HELPER METHODS ===
-    // ====================================================================
+    private void initEvents() {
+        btnAdd.addActionListener(e -> handleAdd());
+        btnSave.addActionListener(e -> handleSave());
+    }
+
+    private void handleAdd() {
+        try {
+            if (cbProduct.getSelectedIndex() < 0) return;
+
+            String itemStr = cbProduct.getSelectedItem().toString();
+            String[] parts = itemStr.split(" - ", 2);
+            String code = parts[0];
+            String name = parts.length > 1 ? parts[1] : code;
+
+            String qtyStr = txtQty.getText().trim();
+            String priceStr = txtPrice.getText().trim();
+
+            if (qtyStr.isEmpty() || priceStr.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Vui lòng nhập đủ số lượng và giá!");
+                return;
+            }
+
+            int qty = Integer.parseInt(qtyStr);
+            int price = Integer.parseInt(priceStr);
+
+            if (qty <= 0 || price < 0) {
+                JOptionPane.showMessageDialog(this, "Số lượng phải > 0 và giá >= 0");
+                return;
+            }
+
+            boolean exists = false;
+            for (ReceiptItemDTO item : cart) {
+                if (item.getProductCode().equals(code)) {
+                    item.setQuantity(item.getQuantity() + qty);
+                    item.setUnitPrice(price);
+                    exists = true;
+                    break;
+                }
+            }
+
+            if (!exists) {
+                cart.add(new ReceiptItemDTO(code, name, qty, price));
+            }
+
+            updateTable();
+            txtQty.setText("");
+            txtPrice.setText("");
+            txtQty.requestFocus();
+
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập số hợp lệ!");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Lỗi: " + ex.getMessage());
+        }
+    }
+
+    private void handleSave() {
+        if (cart.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Danh sách nhập hàng đang trống!");
+            return;
+        }
+        if (txtSupplier.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập tên Nhà Cung Cấp!");
+            txtSupplier.requestFocus();
+            return;
+        }
+
+        int confirm = JOptionPane.showConfirmDialog(this,
+                "Xác nhận nhập kho " + cart.size() + " mặt hàng?",
+                "Xác nhận", JOptionPane.YES_NO_OPTION);
+
+        if (confirm == JOptionPane.YES_OPTION) {
+            boolean result = ReceiptBUS.getInstance().addNewReceipt(
+                    txtSupplier.getText().trim(),
+                    txtNote.getText().trim(),
+                    cart
+            );
+
+            if (result) {
+                JOptionPane.showMessageDialog(this, "Nhập kho thành công!");
+                isSuccess = true;
+                dispose();
+            } else {
+                JOptionPane.showMessageDialog(this, "Lỗi khi lưu phiếu! Vui lòng kiểm tra lại.");
+            }
+        }
+    }
 
     private void loadProducts() {
         products = ProductBUS.getInstance().getAllProducts();
-        if(products != null) {
-            for(ProductDTO p : products) {
+        if (products != null) {
+            for (ProductDTO p : products) {
                 cbProduct.addItem(p.getProductCode() + " - " + p.getName());
             }
         }
@@ -244,15 +247,15 @@ public class ReceiptCreateDialog extends JDialog {
     private void updateTable() {
         modelCart.setRowCount(0);
         long total = 0;
-        for(ReceiptItemDTO i : cart) {
-            long sum = (long)i.getQuantity() * i.getUnitPrice();
+        for (ReceiptItemDTO i : cart) {
+            long sum = (long) i.getQuantity() * i.getUnitPrice();
             total += sum;
             modelCart.addRow(new Object[]{
-                i.getProductCode(), 
-                i.getName(), 
-                i.getQuantity(), 
-                df.format(i.getUnitPrice()), 
-                df.format(sum)
+                    i.getProductCode(),
+                    i.getName(),
+                    i.getQuantity(),
+                    df.format(i.getUnitPrice()),
+                    df.format(sum)
             });
         }
         lblTotal.setText("Tổng tiền: " + df.format(total) + " VND");
@@ -263,31 +266,31 @@ public class ReceiptCreateDialog extends JDialog {
         p.setBackground(Color.WHITE);
         p.setAlignmentX(Component.LEFT_ALIGNMENT);
         p.setMaximumSize(new Dimension(Integer.MAX_VALUE, 65));
-        
+
         JLabel lbl = new JLabel(title);
         lbl.setFont(new Font("Segoe UI", Font.BOLD, 13));
-        lbl.setForeground(new Color(100, 100, 100));
-        
+        lbl.setForeground(COLOR_TEXT);
+
         p.add(lbl, BorderLayout.NORTH);
         p.add(c, BorderLayout.CENTER);
         return p;
     }
 
     private void styleControl(JComponent c) {
-        c.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        c.setFont(FONT_PLAIN);
         c.setPreferredSize(new Dimension(100, 35));
         c.setBorder(new CompoundBorder(
-            new LineBorder(new Color(200, 200, 200)), 
-            new EmptyBorder(5, 8, 5, 8)
+                new LineBorder(new Color(200, 200, 200)),
+                new EmptyBorder(5, 8, 5, 8)
         ));
-        if(c instanceof JComboBox) c.setBackground(Color.WHITE);
+        if (c instanceof JComboBox) c.setBackground(Color.WHITE);
     }
 
     private JButton createBtn(String text, Color bg) {
         JButton btn = new JButton(text);
         btn.setBackground(bg);
         btn.setForeground(Color.WHITE);
-        btn.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        btn.setFont(FONT_BOLD);
         btn.setFocusPainted(false);
         btn.setBorderPainted(false);
         btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -296,7 +299,7 @@ public class ReceiptCreateDialog extends JDialog {
 
     private void styleTable(JTable table) {
         table.setRowHeight(35);
-        table.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        table.setFont(FONT_PLAIN);
         table.setShowVerticalLines(false);
         table.setGridColor(new Color(230, 230, 230));
         table.setFillsViewportHeight(true);
@@ -320,5 +323,7 @@ public class ReceiptCreateDialog extends JDialog {
         table.getColumnModel().getColumn(4).setCellRenderer(right);
     }
 
-    public boolean isSuccess() { return isSuccess; }
+    public boolean isSuccess() {
+        return isSuccess;
+    }
 }

@@ -13,12 +13,10 @@ public class CustomerBUS {
         return instance;
     }
 
-    // Sửa: Trả về boolean
     public boolean addNewUser(String name, String address, String phone) {
-        // Kiểm tra trùng SĐT
         List<CustomerDTO> exist = customerDAO.findByPhone(phone);
         if (!exist.isEmpty()) {
-            return false; // Đã tồn tại
+            return false;
         }
         
         CustomerDTO customer = new CustomerDTO(name, phone, address);
@@ -29,8 +27,6 @@ public class CustomerBUS {
     public List<CustomerDTO> findByPhone(String phone) {
         return customerDAO.findByPhone(phone);
     }
-    
-    // Hàm mới cho GUI load danh sách
     public List<CustomerDTO> getAllCustomers() {
         return customerDAO.getAll();
     }

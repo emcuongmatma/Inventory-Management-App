@@ -19,156 +19,147 @@ import java.util.Date;
 import java.util.List;
 
 public class ReceiptGUI extends JPanel {
+
     private JTable table;
     private DefaultTableModel model;
-    private JSpinner txtDate; // Ô chọn ngày tìm kiếm
-    private DecimalFormat df = new DecimalFormat("###,### VND");
-    private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+    private JSpinner txtDate;
+    private JButton btnAdd, btnDetail, btnSearch, btnRefresh;
+    
     private List<ReceiptDTO> receiptList;
+    private final DecimalFormat df = new DecimalFormat("###,### VND");
+    private final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 
-    // --- MÀU SẮC GIAO DIỆN (FLAT UI) ---
-    private final Color COLOR_BG = new Color(245, 247, 250);
-    private final Color COLOR_PRIMARY = new Color(52, 152, 219); // Xanh dương
-    private final Color COLOR_SUCCESS = new Color(46, 204, 113); // Xanh lá
-    private final Color COLOR_WARNING = new Color(230, 126, 34); // Cam (Nút tìm)
-    private final Color COLOR_GRAY = new Color(149, 165, 166);   // Xám
-    private final Color COLOR_TEXT = new Color(50, 50, 50);
+    private static final Color COLOR_BG = new Color(245, 247, 250);
+    private static final Color COLOR_PRIMARY = new Color(52, 152, 219);
+    private static final Color COLOR_SUCCESS = new Color(46, 204, 113);
+    private static final Color COLOR_WARNING = new Color(230, 126, 34);
+    private static final Color COLOR_GRAY = new Color(149, 165, 166);
+    private static final Color COLOR_TEXT = new Color(50, 50, 50);
+
+    private static final Font FONT_TITLE = new Font("Segoe UI", Font.BOLD, 22);
+    private static final Font FONT_BOLD = new Font("Segoe UI", Font.BOLD, 13);
+    private static final Font FONT_PLAIN = new Font("Segoe UI", Font.PLAIN, 14);
 
     public ReceiptGUI() {
+        initUI();
+        initEvents();
+        loadData();
+    }
+
+    private void initUI() {
         setLayout(new BorderLayout());
         setBackground(COLOR_BG);
-        setBorder(new EmptyBorder(20, 20, 20, 20)); // Padding bao quanh
+        setBorder(new EmptyBorder(20, 20, 20, 20));
 
-        // =========================================================================
-        // === 1. HEADER & TOOLBAR ===
-        // =========================================================================
+        JPanel pnlCard = new JPanel(new BorderLayout());
+        pnlCard.setBackground(Color.WHITE);
+        pnlCard.add(createHeader(), BorderLayout.NORTH);
+        pnlCard.add(createTableSection(), BorderLayout.CENTER);
+
+        add(pnlCard, BorderLayout.CENTER);
+    }
+
+    private JPanel createHeader() {
         JPanel pnlHeader = new JPanel(new BorderLayout());
         pnlHeader.setBackground(Color.WHITE);
         pnlHeader.setBorder(new EmptyBorder(15, 20, 15, 20));
 
-        // Title
         JLabel lblTitle = new JLabel("QUẢN LÝ NHẬP KHO");
-        lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 22));
+        lblTitle.setFont(FONT_TITLE);
         lblTitle.setForeground(new Color(44, 62, 80));
         pnlHeader.add(lblTitle, BorderLayout.NORTH);
 
-        // Toolbar Container
         JPanel pnlTool = new JPanel(new FlowLayout(FlowLayout.LEFT, 15, 15));
         pnlTool.setBackground(Color.WHITE);
-        // pnlTool.setBorder(new MatteBorder(1, 0, 0, 0, new Color(230, 230, 230)));
 
-        // --- NHÓM NÚT CHỨC NĂNG ---
-        JButton btnAdd = createButton("Tạo Phiếu Nhập", COLOR_SUCCESS);
-        JButton btnDetail = createButton("Xem Chi Tiết", COLOR_PRIMARY);
-        
-        // --- NHÓM TÌM KIẾM NGÀY ---
+        btnAdd = createButton("Tạo Phiếu Nhập", COLOR_SUCCESS);
+        btnDetail = createButton("Xem Chi Tiết", COLOR_PRIMARY);
+
         JLabel lblDate = new JLabel("Ngày nhập:");
-        lblDate.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        lblDate.setFont(FONT_BOLD);
         lblDate.setForeground(COLOR_TEXT);
 
-        // Cấu hình JSpinner để chọn ngày
         txtDate = new JSpinner(new SpinnerDateModel());
         JSpinner.DateEditor editor = new JSpinner.DateEditor(txtDate, "dd/MM/yyyy");
         txtDate.setEditor(editor);
         txtDate.setPreferredSize(new Dimension(130, 38));
-        txtDate.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        txtDate.setValue(new Date()); // Mặc định hôm nay
+        txtDate.setFont(FONT_PLAIN);
+        txtDate.setValue(new Date());
 
-        JButton btnSearch = createButton("Tìm", COLOR_WARNING);
+        btnSearch = createButton("Tìm", COLOR_WARNING);
         btnSearch.setPreferredSize(new Dimension(80, 38));
+        btnRefresh = createButton("Làm Mới", COLOR_GRAY);
 
-        JButton btnRefresh = createButton("Làm Mới", COLOR_GRAY);
-
-        // Add components to Toolbar
         pnlTool.add(btnAdd);
         pnlTool.add(btnDetail);
-        pnlTool.add(Box.createHorizontalStrut(30)); // Khoảng cách giữa 2 nhóm
+        pnlTool.add(Box.createHorizontalStrut(30));
         pnlTool.add(lblDate);
         pnlTool.add(txtDate);
         pnlTool.add(btnSearch);
         pnlTool.add(btnRefresh);
 
         pnlHeader.add(pnlTool, BorderLayout.CENTER);
+        return pnlHeader;
+    }
 
-        // =========================================================================
-        // === 2. TABLE ===
-        // =========================================================================
+    private JPanel createTableSection() {
         JPanel pnlTable = new JPanel(new BorderLayout());
         pnlTable.setBackground(Color.WHITE);
         pnlTable.setBorder(new EmptyBorder(0, 20, 20, 20));
 
         String[] headers = {"STT", "Mã Phiếu", "Nhà Cung Cấp", "Thời Gian Tạo", "Ghi Chú", "Tổng Tiền"};
         model = new DefaultTableModel(headers, 0) {
-            @Override public boolean isCellEditable(int row, int col) { return false; }
+            @Override
+            public boolean isCellEditable(int row, int col) {
+                return false;
+            }
         };
         table = new JTable(model);
-        styleTable(table); // Áp dụng style đẹp
+        styleTable(table);
 
         JScrollPane scroll = new JScrollPane(table);
         scroll.getViewport().setBackground(Color.WHITE);
         scroll.setBorder(new LineBorder(new Color(230, 230, 230)));
-        
+
         pnlTable.add(scroll, BorderLayout.CENTER);
+        return pnlTable;
+    }
 
-        // Wrap Header & Table vào Card Layout giả lập
-        JPanel pnlCard = new JPanel(new BorderLayout());
-        pnlCard.setBackground(Color.WHITE);
-        pnlCard.add(pnlHeader, BorderLayout.NORTH);
-        pnlCard.add(pnlTable, BorderLayout.CENTER);
-
-        add(pnlCard, BorderLayout.CENTER);
-
-        // =========================================================================
-        // === 3. EVENTS ===
-        // =========================================================================
-
-        // Sự kiện Thêm mới
+    private void initEvents() {
         btnAdd.addActionListener(e -> {
             JFrame parent = (JFrame) SwingUtilities.getWindowAncestor(this);
             ReceiptCreateDialog dlg = new ReceiptCreateDialog(parent);
             dlg.setVisible(true);
-            if(dlg.isSuccess()) loadData(); // Load lại nếu thêm thành công
+            if (dlg.isSuccess()) loadData();
         });
 
-        // Sự kiện Xem chi tiết
         btnDetail.addActionListener(e -> showDetail());
 
-        // Sự kiện Click đúp bảng
         table.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent evt) {
                 if (evt.getClickCount() == 2) showDetail();
             }
         });
 
-        // Sự kiện Tìm kiếm theo ngày
         btnSearch.addActionListener(e -> {
             try {
                 Date date = (Date) txtDate.getValue();
-                // Gọi BUS tìm theo ngày (Hàm getByDate đã tạo ở bước trước)
                 receiptList = ReceiptBUS.getInstance().getByDate(date);
-                renderTable(); // Chỉ render lại list kết quả
+                renderTable();
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, "Lỗi định dạng ngày!");
             }
         });
 
-        // Sự kiện Làm mới (Reset về tất cả)
         btnRefresh.addActionListener(e -> {
-            txtDate.setValue(new Date()); // Reset ô ngày về hôm nay
-            loadData(); // Load tất cả từ DB
+            txtDate.setValue(new Date());
+            loadData();
         });
-
-        // Load dữ liệu ban đầu
-        loadData();
     }
-
-    // =========================================================================
-    // === HELPER METHODS ===
-    // =========================================================================
 
     private void showDetail() {
         int row = table.getSelectedRow();
-        if(row < 0) {
+        if (row < 0) {
             JOptionPane.showMessageDialog(this, "Vui lòng chọn phiếu cần xem!");
             return;
         }
@@ -178,29 +169,25 @@ public class ReceiptGUI extends JPanel {
         dlg.setVisible(true);
     }
 
-    // Hàm load tất cả dữ liệu từ DB
     public void loadData() {
         receiptList = ReceiptBUS.getInstance().getAllReceipt();
         renderTable();
     }
 
-    // Hàm hiển thị dữ liệu ra bảng
     private void renderTable() {
         model.setRowCount(0);
         int stt = 1;
-        if(receiptList != null) {
+        if (receiptList != null) {
             for (ReceiptDTO r : receiptList) {
-                // Tính tổng tiền an toàn (tránh null)
                 long total = 0;
-                if(r.getItems() != null) {
-                    for(ReceiptItemDTO item : r.getItems()) {
+                if (r.getItems() != null) {
+                    for (ReceiptItemDTO item : r.getItems()) {
                         long qty = item.getQuantity() == null ? 0 : item.getQuantity();
                         long price = item.getUnitPrice() == null ? 0 : item.getUnitPrice();
                         total += qty * price;
                     }
                 }
-                
-                // Lấy ID (tránh null)
+
                 String idStr = (r.get_id() != null) ? r.get_id().toString() : "";
                 
                 model.addRow(new Object[]{
@@ -215,65 +202,58 @@ public class ReceiptGUI extends JPanel {
         }
     }
 
-    // Style nút bấm
     private JButton createButton(String text, Color bg) {
         JButton btn = new JButton(text);
-        btn.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        btn.setFont(FONT_BOLD);
         btn.setBackground(bg);
         btn.setForeground(Color.WHITE);
         btn.setFocusPainted(false);
         btn.setBorderPainted(false);
         btn.setPreferredSize(new Dimension(140, 38));
         btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        
-        // Hover Effect
+
         btn.addMouseListener(new MouseAdapter() {
             public void mouseEntered(MouseEvent e) { btn.setBackground(bg.brighter()); }
             public void mouseExited(MouseEvent e) { btn.setBackground(bg); }
         });
-        
+
         return btn;
     }
 
-    // Style bảng dữ liệu
     private void styleTable(JTable table) {
-        table.setRowHeight(40); // Tăng chiều cao dòng cho thoáng
-        table.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        table.setRowHeight(40);
+        table.setFont(FONT_PLAIN);
         table.setShowVerticalLines(false);
         table.setGridColor(new Color(230, 230, 230));
         table.setSelectionBackground(new Color(232, 240, 254));
         table.setSelectionForeground(Color.BLACK);
         table.setFillsViewportHeight(true);
 
-        // Header
         JTableHeader header = table.getTableHeader();
-        header.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        header.setFont(FONT_BOLD);
         header.setBackground(new Color(245, 247, 250));
         header.setForeground(new Color(50, 50, 50));
         header.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, new Color(200, 200, 200)));
         header.setPreferredSize(new Dimension(0, 40));
 
-        // Alignment
         DefaultTableCellRenderer center = new DefaultTableCellRenderer();
         center.setHorizontalAlignment(JLabel.CENTER);
         
         DefaultTableCellRenderer right = new DefaultTableCellRenderer();
         right.setHorizontalAlignment(JLabel.RIGHT);
-        right.setBorder(new EmptyBorder(0, 0, 0, 10)); // Padding phải cho số tiền
+        right.setBorder(new EmptyBorder(0, 0, 0, 10));
 
         DefaultTableCellRenderer left = new DefaultTableCellRenderer();
         left.setHorizontalAlignment(JLabel.LEFT);
-        left.setBorder(new EmptyBorder(0, 10, 0, 0)); // Padding trái cho text
+        left.setBorder(new EmptyBorder(0, 10, 0, 0));
 
-        table.getColumnModel().getColumn(0).setCellRenderer(center); // STT
+        table.getColumnModel().getColumn(0).setCellRenderer(center);
         table.getColumnModel().getColumn(0).setMaxWidth(50);
-        
-        table.getColumnModel().getColumn(1).setCellRenderer(center); // Mã
+        table.getColumnModel().getColumn(1).setCellRenderer(center);
         table.getColumnModel().getColumn(1).setPreferredWidth(150);
-        
-        table.getColumnModel().getColumn(2).setCellRenderer(left);   // NCC
-        table.getColumnModel().getColumn(3).setCellRenderer(center); // Ngày
-        table.getColumnModel().getColumn(4).setCellRenderer(left);   // Note
-        table.getColumnModel().getColumn(5).setCellRenderer(right);  // Tổng tiền
+        table.getColumnModel().getColumn(2).setCellRenderer(left);
+        table.getColumnModel().getColumn(3).setCellRenderer(center);
+        table.getColumnModel().getColumn(4).setCellRenderer(left);
+        table.getColumnModel().getColumn(5).setCellRenderer(right);
     }
 }

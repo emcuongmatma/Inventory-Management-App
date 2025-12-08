@@ -12,7 +12,7 @@ public class AdminBUS {
     }
 
     public AdminBUS() {
-        // Mỗi khi khởi chạy, kiểm tra xem có admin chưa, chưa có thì tạo
+      
         adminDAO.createDefaultAdminIfEmpty();
     }
 

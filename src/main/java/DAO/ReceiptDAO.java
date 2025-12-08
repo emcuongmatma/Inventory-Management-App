@@ -1,7 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package DAO;
 
 import com.mongodb.client.MongoCollection;
@@ -16,10 +13,7 @@ import org.bson.Document;
 import com.mongodb.client.model.Filters;
 import java.util.Date;
 import org.bson.conversions.Bson;
-/**
- *
- * @author ECMM
- */
+
 public class ReceiptDAO {
 
     private final MongoCollection<Document> collection;
@@ -45,10 +39,8 @@ public class ReceiptDAO {
         }
         return list;
     }
-// Trong file DAO/ReceiptDAO.java
 public List<ReceiptDTO> findByDateRange(Date start, Date end) {
     List<ReceiptDTO> list = new ArrayList<>();
-    // Lọc: Ngày tạo >= Đầu ngày VÀ Ngày tạo <= Cuối ngày
     Bson filter = Filters.and(
         Filters.gte("receiptDate", start),
         Filters.lte("receiptDate", end)
@@ -61,8 +53,6 @@ public List<ReceiptDTO> findByDateRange(Date start, Date end) {
 }
 private ReceiptDTO convert(Document doc) {
     ReceiptDTO p = new ReceiptDTO();
-    
-    // --- SỬA 1: THÊM DÒNG NÀY ĐỂ LẤY ID ---
     p.set_id(doc.getObjectId("_id")); 
     
     p.setNote(doc.getString("note"));
@@ -70,15 +60,14 @@ private ReceiptDTO convert(Document doc) {
     p.setReceiptDate(doc.getDate("receiptDate"));
     
     List<Document> itemDocs = (List<Document>) doc.get("items");
-    if (itemDocs != null) { // Thêm check null cho an toàn
+    if (itemDocs != null) {
         List<ReceiptItemDTO> items = itemDocs.stream()
                 .map(d -> new ReceiptItemDTO(
                         d.getString("productCode"),
                         d.getString("name"),
                         d.getInteger("quantity", 0),
                         
-                        // --- SỬA 2: Đảm bảo lấy đúng tên trường giá từ DB ---
-                        // Nếu DB lưu 'price' thì lấy 'price', nếu null thì lấy 0
+                     
                         d.getInteger("price") != null ? d.getInteger("price") : d.getInteger("unitPrice", 0)
                 ))
                 .toList();

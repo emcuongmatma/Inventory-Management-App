@@ -27,6 +27,7 @@ DTO\ReceiptItemDTO.class
 DAO\ReceiptDAO.class
 GUI\ProductDialog$BrandItem.class
 GUI\MainGUI.class
+GUI\ReceiptCreateDialog$1.class
 DTO\ReceiptDTO.class
 GUI\ProductDialog$CategoryItem.class
 GUI\StartsGUI.class

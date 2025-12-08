@@ -22,7 +22,7 @@ public class AdminDTO {
         this.address = address;
     }
 
-    // Getters
+
     public String getUserName() { return userName; }
     public String getName() { return name; }
     public String getEmail() { return email; }
@@ -31,7 +31,6 @@ public class AdminDTO {
     public String getPhone() { return phone; }
     public String getAddress() { return address; }
 
-    // Setters
     public void setUserName(String userName) { this.userName = userName; }
     public void setName(String name) { this.name = name; }
     public void setEmail(String email) { this.email = email; }

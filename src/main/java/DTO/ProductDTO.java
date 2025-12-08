@@ -26,7 +26,6 @@ public class ProductDTO {
         this.brandCode = brandCode;
     }
 
-    // Getters
     public String getProductCode() { return productCode; }
     public String getName() { return name; }
     public String getDescription() { return description; }
@@ -37,7 +36,6 @@ public class ProductDTO {
     public String getCategoryCode() { return categoryCode; }
     public String getBrandCode() { return brandCode; }
 
-    // Setters
     public void setProductCode(String productCode) { this.productCode = productCode; }
     public void setName(String name) { this.name = name; }
     public void setDescription(String description) { this.description = description; }
