@@ -231,7 +231,8 @@ public class BrandGUI extends JPanel {
     private void styleTable(JTable table) {
         table.setRowHeight(35);
         table.setFont(FONT_TEXT);
-        table.setShowVerticalLines(false);
+         table.setShowVerticalLines(true);
+        table.setShowHorizontalLines(true); 
         table.setGridColor(new Color(230, 230, 230));
         table.setSelectionBackground(new Color(232, 240, 254));
         table.setSelectionForeground(Color.BLACK);

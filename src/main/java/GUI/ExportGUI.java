@@ -16,6 +16,8 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -33,6 +35,8 @@ public class ExportGUI extends JPanel {
     
     private List<ReceiptItemDTO> cart = new ArrayList<>();
     private List<ProductDTO> products;
+    private List<ExportDTO> exportList; 
+    
     private final DecimalFormat df = new DecimalFormat("###,###");
     private final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 
@@ -145,7 +149,7 @@ public class ExportGUI extends JPanel {
         lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 16));
         lblTitle.setForeground(new Color(44, 62, 80));
 
-        btnRefresh = new JButton("Refresh");
+        btnRefresh = new JButton("Làm Mới");
         styleButton(btnRefresh, new Color(108, 117, 125));
         btnRefresh.setPreferredSize(new Dimension(80, 28));
         btnRefresh.setFont(new Font("Segoe UI", Font.BOLD, 11));
@@ -153,7 +157,12 @@ public class ExportGUI extends JPanel {
         pHeader.add(lblTitle, BorderLayout.WEST);
         pHeader.add(btnRefresh, BorderLayout.EAST);
 
-        modelHistory = new DefaultTableModel(new String[]{"Mã HĐ", "Khách Hàng", "Ngày", "Tổng"}, 0);
+        modelHistory = new DefaultTableModel(new String[]{"Mã HĐ", "Khách Hàng", "Ngày", "Tổng"}, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
         tableHistory = new JTable(modelHistory);
         styleTable(tableHistory);
         
@@ -173,6 +182,19 @@ public class ExportGUI extends JPanel {
         btnAdd.addActionListener(e -> handleAddCart());
         btnPay.addActionListener(e -> handlePayment());
         btnRefresh.addActionListener(e -> loadData());
+
+        tableHistory.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent evt) {
+                if (evt.getClickCount() == 2 && tableHistory.getSelectedRow() != -1) {
+                    int row = tableHistory.getSelectedRow();
+                    ExportDTO selectedExport = exportList.get(row);
+                    
+                    JFrame parent = (JFrame) SwingUtilities.getWindowAncestor(ExportGUI.this);
+                    new ExportDetailDialog(parent, selectedExport).setVisible(true);
+                }
+            }
+        });
     }
 
     private void handleAddCart() {
@@ -271,9 +293,9 @@ public class ExportGUI extends JPanel {
         }
 
         modelHistory.setRowCount(0);
-        List<ExportDTO> history = ExportBUS.getInstance().getAllExports();
-        if (history != null) {
-            for (ExportDTO e : history) {
+        exportList = ExportBUS.getInstance().getAllExports();
+        if (exportList != null) {
+            for (ExportDTO e : exportList) {
                 String phoneCode = e.getCustomerCode();
                 String displayName = phoneCode;
                 
@@ -341,7 +363,9 @@ public class ExportGUI extends JPanel {
     private void styleTable(JTable table) {
         table.setRowHeight(30);
         table.setFont(new Font("Segoe UI", Font.PLAIN, 13));
-        table.setShowVerticalLines(false);
+
+        table.setShowVerticalLines(true); 
+        table.setShowHorizontalLines(true); 
         table.setGridColor(new Color(230, 230, 230));
         JTableHeader header = table.getTableHeader();
         header.setFont(new Font("Segoe UI", Font.BOLD, 12));

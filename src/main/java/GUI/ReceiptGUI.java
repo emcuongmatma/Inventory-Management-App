@@ -258,7 +258,9 @@ public class ReceiptGUI extends JPanel {
         table.setSelectionBackground(new Color(232, 240, 254));
         table.setSelectionForeground(Color.BLACK);
         table.setFillsViewportHeight(true);
-
+         table.setShowVerticalLines(true); 
+        table.setShowHorizontalLines(true);
+        table.setGridColor(new Color(230, 230, 230));
         JTableHeader header = table.getTableHeader();
         header.setFont(FONT_BOLD);
         header.setBackground(new Color(245, 247, 250));

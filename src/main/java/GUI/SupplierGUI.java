@@ -309,11 +309,12 @@ public class SupplierGUI extends JPanel {
     private void styleTable(JTable table) {
         table.setRowHeight(35);
         table.setFont(FONT_PLAIN);
-        table.setShowVerticalLines(false);
         table.setGridColor(new Color(230, 230, 230));
         table.setSelectionBackground(new Color(232, 240, 254));
         table.setSelectionForeground(Color.BLACK);
-
+         table.setShowVerticalLines(true); 
+        table.setShowHorizontalLines(true); 
+        table.setGridColor(new Color(230, 230, 230));
         JTableHeader header = table.getTableHeader();
         header.setFont(FONT_BOLD);
         header.setBackground(new Color(245, 247, 250));

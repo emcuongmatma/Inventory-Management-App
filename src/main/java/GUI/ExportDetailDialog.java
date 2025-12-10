@@ -1,6 +1,8 @@
 package GUI;
 
-import DTO.ReceiptDTO;
+import BUS.CustomerBUS;
+import DTO.CustomerDTO;
+import DTO.ExportDTO;
 import DTO.ReceiptItemDTO;
 
 import javax.swing.*;
@@ -14,19 +16,19 @@ import javax.swing.table.JTableHeader;
 import java.awt.*;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.List;
 
-public class ReceiptDetailDialog extends JDialog {
+public class ExportDetailDialog extends JDialog {
 
-    private final ReceiptDTO receipt;
+    private final ExportDTO export;
     private final DecimalFormat df = new DecimalFormat("###,###");
     private final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 
-    private static final Color COLOR_PRIMARY = new Color(52, 152, 219);
+    private static final Color COLOR_PRIMARY = new Color(46, 204, 113); 
     private static final Color COLOR_BG = Color.WHITE;
     private static final Color COLOR_TEXT = new Color(50, 50, 50);
     private static final Color COLOR_GRAY_BORDER = new Color(230, 230, 230);
     private static final Color COLOR_DANGER = new Color(231, 76, 60);
-    private static final Color COLOR_SUCCESS = new Color(46, 204, 113);
     private static final Color COLOR_GRAY_BTN = new Color(149, 165, 166);
 
     private static final Font FONT_TITLE = new Font("Segoe UI", Font.BOLD, 24);
@@ -34,9 +36,9 @@ public class ReceiptDetailDialog extends JDialog {
     private static final Font FONT_PLAIN = new Font("Segoe UI", Font.PLAIN, 16);
     private static final Font FONT_TABLE = new Font("Segoe UI", Font.PLAIN, 14);
 
-    public ReceiptDetailDialog(JFrame parent, ReceiptDTO receipt) {
-        super(parent, "Chi Tiết Phiếu Nhập", true);
-        this.receipt = receipt;
+    public ExportDetailDialog(JFrame parent, ExportDTO export) {
+        super(parent, "Chi Tiết Phiếu Xuất", true);
+        this.export = export;
         initUI();
     }
 
@@ -56,7 +58,7 @@ public class ReceiptDetailDialog extends JDialog {
         pnlHeader.setBackground(COLOR_PRIMARY);
         pnlHeader.setBorder(new EmptyBorder(15, 0, 15, 0));
 
-        JLabel lblTitle = new JLabel("CHI TIẾT PHIẾU NHẬP KHO", SwingConstants.CENTER);
+        JLabel lblTitle = new JLabel("CHI TIẾT PHIẾU XUẤT KHO", SwingConstants.CENTER);
         lblTitle.setFont(FONT_TITLE);
         lblTitle.setForeground(Color.WHITE);
         pnlHeader.add(lblTitle, BorderLayout.CENTER);
@@ -83,10 +85,20 @@ public class ReceiptDetailDialog extends JDialog {
             new EmptyBorder(15, 20, 15, 20)
         ));
 
-        pnlInfo.add(createDisplayField("Mã Phiếu Nhập", receipt.get_id().toString()));
-        pnlInfo.add(createDisplayField("Thời Gian Tạo", sdf.format(receipt.getReceiptDate())));
-        pnlInfo.add(createDisplayField("Nhà Cung Cấp", receipt.getSupplierCode()));
-        pnlInfo.add(createDisplayField("Ghi Chú", receipt.getNote() == null ? "Không có" : receipt.getNote()));
+        String customerInfo = export.getCustomerCode();
+        try {
+            List<CustomerDTO> list = CustomerBUS.getInstance().findByPhone(export.getCustomerCode());
+            if (list != null && !list.isEmpty()) {
+                customerInfo = list.get(0).getName() + " - " + export.getCustomerCode();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        pnlInfo.add(createDisplayField("Mã Phiếu Xuất", export.get_id().toString()));
+        pnlInfo.add(createDisplayField("Thời Gian Tạo", sdf.format(export.getExportDate())));
+        pnlInfo.add(createDisplayField("Khách Hàng", customerInfo));
+        pnlInfo.add(createDisplayField("Ghi Chú", export.getNote() == null || export.getNote().isEmpty() ? "Xuất bán hàng" : export.getNote()));
 
         return pnlInfo;
     }
@@ -104,8 +116,8 @@ public class ReceiptDetailDialog extends JDialog {
 
         long totalSum = 0;
         int stt = 1;
-        if (receipt.getItems() != null) {
-            for (ReceiptItemDTO item : receipt.getItems()) {
+        if (export.getItems() != null) {
+            for (ReceiptItemDTO item : export.getItems()) {
                 long total = (long) item.getQuantity() * item.getUnitPrice();
                 totalSum += total;
                 model.addRow(new Object[]{
@@ -147,7 +159,7 @@ public class ReceiptDetailDialog extends JDialog {
         pnlFooter.setBackground(new Color(245, 247, 250));
         pnlFooter.setBorder(new MatteBorder(1, 0, 0, 0, new Color(220, 220, 220)));
 
-        JButton btnPrint = createBtn("In Phiếu", COLOR_SUCCESS);
+        JButton btnPrint = createBtn("In Hóa Đơn", COLOR_PRIMARY);
         JButton btnClose = createBtn("Đóng", COLOR_GRAY_BTN);
 
         btnClose.addActionListener(e -> dispose());
@@ -182,11 +194,11 @@ public class ReceiptDetailDialog extends JDialog {
         table.setRowHeight(40);
         table.setFont(FONT_TABLE);
         table.setShowVerticalLines(false);
-        table.setGridColor(COLOR_GRAY_BORDER);
         table.setFillsViewportHeight(true);
         table.setShowVerticalLines(true); 
         table.setShowHorizontalLines(true); 
         table.setGridColor(new Color(230, 230, 230));
+
         JTableHeader header = table.getTableHeader();
         header.setFont(FONT_BOLD);
         header.setBackground(new Color(245, 247, 250));

@@ -238,11 +238,12 @@ public class CategoryGUI extends JPanel {
     private void styleTable(JTable table) {
         table.setRowHeight(35);
         table.setFont(FONT_TEXT);
-        table.setShowVerticalLines(false);
+         table.setShowVerticalLines(true); 
+        table.setShowHorizontalLines(true);
         table.setGridColor(new Color(230, 230, 230));
         table.setSelectionBackground(new Color(232, 240, 254));
         table.setSelectionForeground(Color.BLACK);
-
+        
         JTableHeader header = table.getTableHeader();
         header.setFont(new Font("Segoe UI", Font.BOLD, 13));
         header.setBackground(new Color(245, 247, 250));

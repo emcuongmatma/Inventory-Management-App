@@ -33,7 +33,7 @@ public class ReceiptCreateDialog extends JDialog {
     private List<ProductDTO> products;
 
     private SupplierBUS supplierBUS = new SupplierBUS();
-    // ----------------------------------------
+ 
     
     private final DecimalFormat df = new DecimalFormat("###,###");
     private boolean isSuccess = false;
@@ -337,7 +337,9 @@ public class ReceiptCreateDialog extends JDialog {
         table.setShowVerticalLines(false);
         table.setGridColor(new Color(230, 230, 230));
         table.setFillsViewportHeight(true);
-
+         table.setShowVerticalLines(true); 
+        table.setShowHorizontalLines(true); 
+        table.setGridColor(new Color(230, 230, 230));
         JTableHeader header = table.getTableHeader();
         header.setFont(new Font("Segoe UI", Font.BOLD, 13));
         header.setBackground(new Color(240, 242, 245));

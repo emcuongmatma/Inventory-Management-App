@@ -22,7 +22,8 @@ import java.util.List;
 
 public class StartsGUI extends JPanel {
 
-    private JLabel lblTotalImport, lblTotalExport, lblProfit;
+    // Đã bỏ lblProfit
+    private JLabel lblTotalImport, lblTotalExport;
     private JSpinner txtDateFrom, txtDateTo;
     private DefaultTableModel modelImport, modelExport;
     private SimpleChartPanel chartPanel;
@@ -34,7 +35,7 @@ public class StartsGUI extends JPanel {
     private static final Color COLOR_BG = new Color(245, 247, 250);
     private static final Color COLOR_IMPORT = new Color(231, 76, 60);
     private static final Color COLOR_EXPORT = new Color(46, 204, 113);
-    private static final Color COLOR_PROFIT = new Color(52, 152, 219);
+    // Đã bỏ COLOR_PROFIT
     private static final Color COLOR_TEXT = new Color(44, 62, 80);
     private static final Font FONT_BOLD = new Font("Segoe UI", Font.BOLD, 16);
 
@@ -72,7 +73,7 @@ public class StartsGUI extends JPanel {
         btnFilter = new JButton("Thống Kê");
         styleButton(btnFilter, new Color(241, 196, 15));
 
-        btnRefresh = new JButton("Toàn bộ thời gian");
+        btnRefresh = new JButton("Toàn bộ");
         styleButton(btnRefresh, new Color(149, 165, 166));
 
         pnlFilter.add(lblTitle);
@@ -91,21 +92,21 @@ public class StartsGUI extends JPanel {
         JPanel pnlCenter = new JPanel(new BorderLayout(20, 20));
         pnlCenter.setOpaque(false);
 
-        JPanel pnlCards = new JPanel(new GridLayout(1, 3, 20, 0));
+        JPanel pnlCards = new JPanel(new GridLayout(1, 2, 20, 0));
         pnlCards.setOpaque(false);
         pnlCards.setPreferredSize(new Dimension(0, 120));
 
         JPanel cardImport = createCard("TỔNG CHI (NHẬP)", COLOR_IMPORT);
         JPanel cardExport = createCard("TỔNG THU (XUẤT)", COLOR_EXPORT);
-        JPanel cardProfit = createCard("LỢI NHUẬN", COLOR_PROFIT);
+        // Đã xóa phần tạo cardProfit
 
         lblTotalImport = (JLabel) cardImport.getComponent(1);
         lblTotalExport = (JLabel) cardExport.getComponent(1);
-        lblProfit = (JLabel) cardProfit.getComponent(1);
 
         pnlCards.add(cardImport);
         pnlCards.add(cardExport);
-        pnlCards.add(cardProfit);
+        // Đã xóa pnlCards.add(cardProfit);
+
         pnlCenter.add(pnlCards, BorderLayout.NORTH);
 
         JPanel pnlDetails = new JPanel(new BorderLayout(20, 0));
@@ -207,7 +208,7 @@ public class StartsGUI extends JPanel {
 
             lblTotalImport.setText(df.format(totalImp));
             lblTotalExport.setText(df.format(totalExp));
-            lblProfit.setText(df.format(totalExp - totalImp));
+
 
             chartPanel.updateValues(totalImp, totalExp);
 
@@ -256,6 +257,9 @@ public class StartsGUI extends JPanel {
         table.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 12));
         table.setShowVerticalLines(false);
 
+        table.setShowVerticalLines(true); 
+        table.setShowHorizontalLines(true); 
+        table.setGridColor(new Color(230, 230, 230));
         DefaultTableCellRenderer center = new DefaultTableCellRenderer();
         center.setHorizontalAlignment(JLabel.CENTER);
         table.getColumnModel().getColumn(0).setCellRenderer(center);

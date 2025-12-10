@@ -62,7 +62,7 @@ public class CustomerGUI extends JPanel {
         txtSearch.putClientProperty("JTextField.placeholderText", "Nhập SĐT khách hàng...");
 
         btnSearch = createBtn("Tìm", COLOR_PRIMARY);
-        btnReload = createBtn("Tải lại", COLOR_GRAY);
+        btnReload = createBtn("Làm Mới", COLOR_GRAY);
 
         pnlSearch.add(lblSearch);
         pnlSearch.add(txtSearch);
@@ -160,7 +160,8 @@ public class CustomerGUI extends JPanel {
     private void styleTable(JTable table) {
         table.setRowHeight(40);
         table.setFont(FONT_TEXT);
-        table.setShowVerticalLines(false);
+        table.setShowVerticalLines(true); 
+        table.setShowHorizontalLines(true); 
         table.setGridColor(new Color(240, 240, 240));
         table.setSelectionBackground(new Color(232, 240, 254));
         table.setSelectionForeground(Color.BLACK);

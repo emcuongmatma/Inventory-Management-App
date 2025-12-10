@@ -3,12 +3,15 @@ BUS\ReceiptBUS.class
 GUI\ProductGUI$1.class
 DAO\BrandDAO.class
 DAO\CategoryDAO.class
+GUI\ExportDetailDialog.class
 GUI\StartsGUI$SimpleChartPanel.class
 DAO\AdminDAO.class
 config\MongoDBConnection.class
 DTO\SupplierDTO.class
+GUI\ExportGUI$1.class
 BUS\ProductBUS.class
 GUI\BrandGUI$1.class
+GUI\ExportDetailDialog$1.class
 GUI\CategoryGUI$1.class
 GUI\BrandGUI.class
 GUI\ReceiptDetailDialog.class
@@ -19,6 +22,7 @@ GUI\LoginGUI$1.class
 GUI\ProductGUI.class
 BUS\CustomerBUS.class
 GUI\CategoryGUI.class
+GUI\ExportGUI$2.class
 GUI\ProductGUI$BrandItem.class
 BUS\ExportBUS.class
 GUI\ProductGUI$CategoryItem.class
