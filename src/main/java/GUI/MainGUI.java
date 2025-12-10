@@ -23,7 +23,7 @@ public class MainGUI extends JFrame {
     private ExportGUI exportGUI;
     private StartsGUI statsGUI;
     private CustomerGUI customerGUI;
-
+    private SupplierGUI supplierGUI;
     private List<MenuButton> menuButtons = new ArrayList<>();
     private MenuButton activeBtn = null;
 
@@ -111,9 +111,9 @@ public class MainGUI extends JFrame {
         addMenuButton(pnlList, "  DANH MỤC", "CATEGORY");
         addMenuButton(pnlList, "  NHẬP KHO", "RECEIPT");
         addMenuButton(pnlList, "  XUẤT KHO", "EXPORT");
-        addMenuButton(pnlList, "  THỐNG KÊ", "STATS");
+        addMenuButton(pnlList, "NHÀ CUNG CẤP", "SUPPLIER");
         addMenuButton(pnlList, "  KHÁCH HÀNG", "CUSTOMER");
-
+         addMenuButton(pnlList, "  THỐNG KÊ", "STATS");
         return pnlList;
     }
 
@@ -148,7 +148,7 @@ public class MainGUI extends JFrame {
         exportGUI = new ExportGUI();
         statsGUI = new StartsGUI();
         customerGUI = new CustomerGUI();
-
+        supplierGUI = new SupplierGUI();
         pnlContent.add(productGUI, "PRODUCT");
         pnlContent.add(brandGUI, "BRAND");
         pnlContent.add(categoryGUI, "CATEGORY");
@@ -156,7 +156,7 @@ public class MainGUI extends JFrame {
         pnlContent.add(exportGUI, "EXPORT");
         pnlContent.add(statsGUI, "STATS");
         pnlContent.add(customerGUI, "CUSTOMER");
-
+        pnlContent.add(supplierGUI, "SUPPLIER");
         contentPane.add(pnlContent, BorderLayout.CENTER);
     }
 
@@ -186,6 +186,7 @@ public class MainGUI extends JFrame {
             case "RECEIPT": receiptGUI.loadData(); break;
             case "EXPORT": exportGUI.loadData(); break;
             case "STATS": statsGUI.loadData(); break;
+            case "SUPPLIER" :supplierGUI.loadData(); break;
         }
     }
 

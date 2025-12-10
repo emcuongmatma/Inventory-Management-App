@@ -2,8 +2,10 @@ package GUI;
 
 import BUS.ProductBUS;
 import BUS.ReceiptBUS;
+import BUS.SupplierBUS;
 import DTO.ProductDTO;
 import DTO.ReceiptItemDTO;
+import DTO.SupplierDTO;
 
 import javax.swing.*;
 import javax.swing.border.CompoundBorder;
@@ -20,7 +22,8 @@ import java.util.List;
 public class ReceiptCreateDialog extends JDialog {
 
     private JComboBox<String> cbProduct;
-    private JTextField txtQty, txtPrice, txtSupplier, txtNote;
+    private JComboBox<String> cbSupplier; 
+    private JTextField txtQty, txtPrice, txtNote;
     private DefaultTableModel modelCart;
     private JTable tableCart;
     private JLabel lblTotal;
@@ -28,6 +31,10 @@ public class ReceiptCreateDialog extends JDialog {
 
     private List<ReceiptItemDTO> cart = new ArrayList<>();
     private List<ProductDTO> products;
+
+    private SupplierBUS supplierBUS = new SupplierBUS();
+    // ----------------------------------------
+    
     private final DecimalFormat df = new DecimalFormat("###,###");
     private boolean isSuccess = false;
 
@@ -43,7 +50,7 @@ public class ReceiptCreateDialog extends JDialog {
         super(parent, "Tạo Phiếu Nhập Kho", true);
         initUI();
         initEvents();
-        loadProducts();
+        loadData();
     }
 
     private void initUI() {
@@ -68,13 +75,15 @@ public class ReceiptCreateDialog extends JDialog {
         lblHeader.setForeground(COLOR_PRIMARY);
         lblHeader.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        txtSupplier = new JTextField();
+        cbSupplier = new JComboBox<>();
+ 
+        
         txtNote = new JTextField();
         cbProduct = new JComboBox<>();
         txtPrice = new JTextField();
         txtQty = new JTextField();
 
-        styleControl(txtSupplier);
+        styleControl(cbSupplier); // Style cho ComboBox Supplier
         styleControl(txtNote);
         styleControl(cbProduct);
         styleControl(txtPrice);
@@ -86,7 +95,10 @@ public class ReceiptCreateDialog extends JDialog {
 
         pnlLeft.add(lblHeader);
         pnlLeft.add(Box.createVerticalStrut(20));
-        pnlLeft.add(createInputGroup("Nhà Cung Cấp:", txtSupplier));
+
+        pnlLeft.add(createInputGroup("Chọn Nhà Cung Cấp:", cbSupplier));
+
+        
         pnlLeft.add(Box.createVerticalStrut(10));
         pnlLeft.add(createInputGroup("Ghi Chú:", txtNote));
         pnlLeft.add(Box.createVerticalStrut(20));
@@ -208,19 +220,24 @@ public class ReceiptCreateDialog extends JDialog {
             JOptionPane.showMessageDialog(this, "Danh sách nhập hàng đang trống!");
             return;
         }
-        if (txtSupplier.getText().trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Vui lòng nhập tên Nhà Cung Cấp!");
-            txtSupplier.requestFocus();
+
+
+        if (cbSupplier.getSelectedItem() == null) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn Nhà Cung Cấp!");
             return;
         }
 
+        String supplierStr = cbSupplier.getSelectedItem().toString();
+        String supplierCode = supplierStr.split(" - ")[0]; 
+
+
         int confirm = JOptionPane.showConfirmDialog(this,
-                "Xác nhận nhập kho " + cart.size() + " mặt hàng?",
+                "Xác nhận nhập kho " + cart.size() + " mặt hàng từ " + supplierStr + "?",
                 "Xác nhận", JOptionPane.YES_NO_OPTION);
 
         if (confirm == JOptionPane.YES_OPTION) {
             boolean result = ReceiptBUS.getInstance().addNewReceipt(
-                    txtSupplier.getText().trim(),
+                    supplierCode,
                     txtNote.getText().trim(),
                     cart
             );
@@ -235,11 +252,28 @@ public class ReceiptCreateDialog extends JDialog {
         }
     }
 
+    private void loadData() {
+        loadProducts();
+        loadSuppliers();
+    }
+
     private void loadProducts() {
+        cbProduct.removeAllItems();
         products = ProductBUS.getInstance().getAllProducts();
         if (products != null) {
             for (ProductDTO p : products) {
                 cbProduct.addItem(p.getProductCode() + " - " + p.getName());
+            }
+        }
+    }
+    
+    private void loadSuppliers() {
+        cbSupplier.removeAllItems();
+        List<SupplierDTO> suppliers = supplierBUS.getAllSuppliers();
+        if (suppliers != null) {
+            for (SupplierDTO s : suppliers) {
+                // Hiển thị dạng: SP001 - Công ty ABC
+                cbSupplier.addItem(s.getSupplierCode() + " - " + s.getName());
             }
         }
     }

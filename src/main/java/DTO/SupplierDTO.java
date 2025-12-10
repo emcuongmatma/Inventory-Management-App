@@ -3,7 +3,7 @@ package DTO;
 
 
 public class SupplierDTO {
-    // Các trường dữ liệu
+    
     private String supplierCode;
     private String name;
     private String email;

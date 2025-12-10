@@ -1,8 +1,10 @@
 package GUI;
 
 import BUS.ReceiptBUS;
+import BUS.SupplierBUS;
 import DTO.ReceiptDTO;
 import DTO.ReceiptItemDTO;
+import DTO.SupplierDTO;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -16,7 +18,9 @@ import java.awt.event.MouseEvent;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ReceiptGUI extends JPanel {
 
@@ -24,8 +28,12 @@ public class ReceiptGUI extends JPanel {
     private DefaultTableModel model;
     private JSpinner txtDate;
     private JButton btnAdd, btnDetail, btnSearch, btnRefresh;
-    
+
     private List<ReceiptDTO> receiptList;
+    
+    private final SupplierBUS supplierBUS; 
+    private final Map<String, String> supplierMap; 
+
     private final DecimalFormat df = new DecimalFormat("###,### VND");
     private final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 
@@ -41,6 +49,10 @@ public class ReceiptGUI extends JPanel {
     private static final Font FONT_PLAIN = new Font("Segoe UI", Font.PLAIN, 14);
 
     public ReceiptGUI() {
+
+        supplierBUS = new SupplierBUS();
+        supplierMap = new HashMap<>();
+
         initUI();
         initEvents();
         loadData();
@@ -169,9 +181,24 @@ public class ReceiptGUI extends JPanel {
         dlg.setVisible(true);
     }
 
+
+
     public void loadData() {
+        loadSupplierCache();
+
         receiptList = ReceiptBUS.getInstance().getAllReceipt();
+
         renderTable();
+    }
+
+    private void loadSupplierCache() {
+        supplierMap.clear();
+        List<SupplierDTO> list = supplierBUS.getAllSuppliers();
+        if (list != null) {
+            for (SupplierDTO s : list) {
+                supplierMap.put(s.getSupplierCode(), s.getName());
+            }
+        }
     }
 
     private void renderTable() {
@@ -190,10 +217,12 @@ public class ReceiptGUI extends JPanel {
 
                 String idStr = (r.get_id() != null) ? r.get_id().toString() : "";
                 
+                String supplierName = supplierMap.getOrDefault(r.getSupplierCode(), r.getSupplierCode());
+
                 model.addRow(new Object[]{
                     stt++,
                     idStr,
-                    r.getSupplierCode(),
+                    supplierName,
                     sdf.format(r.getReceiptDate()),
                     r.getNote(),
                     df.format(total)
@@ -201,6 +230,7 @@ public class ReceiptGUI extends JPanel {
             }
         }
     }
+
 
     private JButton createButton(String text, Color bg) {
         JButton btn = new JButton(text);
@@ -251,9 +281,9 @@ public class ReceiptGUI extends JPanel {
         table.getColumnModel().getColumn(0).setMaxWidth(50);
         table.getColumnModel().getColumn(1).setCellRenderer(center);
         table.getColumnModel().getColumn(1).setPreferredWidth(150);
-        table.getColumnModel().getColumn(2).setCellRenderer(left);
+        table.getColumnModel().getColumn(2).setCellRenderer(left); // Cột Tên NCC canh trái
         table.getColumnModel().getColumn(3).setCellRenderer(center);
         table.getColumnModel().getColumn(4).setCellRenderer(left);
-        table.getColumnModel().getColumn(5).setCellRenderer(right);
+        table.getColumnModel().getColumn(5).setCellRenderer(right); // Cột Tiền canh phải
     }
 }

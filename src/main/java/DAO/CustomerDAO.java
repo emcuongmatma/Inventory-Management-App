@@ -21,8 +21,9 @@ public class CustomerDAO {
     public void insert(CustomerDTO customer) {
         Document doc = new Document()
                 .append("name", customer.getName())
-                .append("address", customer.getAddress())
-                .append("phone", customer.getPhone());
+                 .append("phone", customer.getPhone())
+                .append("address", customer.getAddress());
+               
         collection.insertOne(doc);
     }
 

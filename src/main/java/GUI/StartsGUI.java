@@ -1,7 +1,9 @@
 package GUI;
 
+import BUS.CustomerBUS;
 import BUS.ExportBUS;
 import BUS.ReceiptBUS;
+import DTO.CustomerDTO;
 import DTO.ExportDTO;
 import DTO.ReceiptDTO;
 import DTO.ReceiptItemDTO;
@@ -35,7 +37,6 @@ public class StartsGUI extends JPanel {
     private static final Color COLOR_PROFIT = new Color(52, 152, 219);
     private static final Color COLOR_TEXT = new Color(44, 62, 80);
     private static final Font FONT_BOLD = new Font("Segoe UI", Font.BOLD, 16);
-    private static final Font FONT_NORMAL = new Font("Segoe UI", Font.PLAIN, 12);
 
     public StartsGUI() {
         initUI();
@@ -186,10 +187,19 @@ public class StartsGUI extends JPanel {
                 for (ExportDTO ex : exports) {
                     double billTotal = ex.getTotalPrice() == null ? 0 : ex.getTotalPrice();
                     totalExp += billTotal;
+
+                    String phoneCode = ex.getCustomerCode();
+                    String displayName = phoneCode;
+                    
+                    List<CustomerDTO> customers = CustomerBUS.getInstance().findByPhone(phoneCode);
+                    if (customers != null && !customers.isEmpty()) {
+                        displayName = customers.get(0).getName();
+                    }
+
                     modelExport.addRow(new Object[]{
                         sdf.format(ex.getExportDate()),
                         ex.get_id(),
-                        ex.getCustomerCode(),
+                        displayName,
                         df.format(billTotal)
                     });
                 }

@@ -13,6 +13,7 @@ GUI\CategoryGUI$1.class
 GUI\BrandGUI.class
 GUI\ReceiptDetailDialog.class
 GUI\LoginGUI$2.class
+GUI\CustomerGUI$2.class
 GUI\ReceiptGUI$2.class
 GUI\LoginGUI$1.class
 GUI\ProductGUI.class
@@ -23,6 +24,7 @@ BUS\ExportBUS.class
 GUI\ProductGUI$CategoryItem.class
 DAO\SupplierDAO.class
 DTO\CategoryDTO.class
+GUI\SupplierGUI$1.class
 DTO\ReceiptItemDTO.class
 DAO\ReceiptDAO.class
 GUI\ProductDialog$BrandItem.class
@@ -40,6 +42,7 @@ GUI\MainGUI$MenuButton.class
 DTO\ExportDTO.class
 DTO\ProductDTO.class
 DTO\BrandDTO.class
+BUS\SupplierBUS.class
 GUI\CustomerGUI$1.class
 DAO\OrderDAO.class
 DTO\CustomerDTO.class
@@ -48,8 +51,10 @@ GUI\CustomerGUI.class
 GUI\MainGUI$MenuButton$1.class
 utils\OrderStatus.class
 BUS\CategoryBUS.class
+GUI\SupplierGUI$2.class
 DTO\AdminDTO.class
 DTO\OrderItemDTO.class
+GUI\SupplierGUI.class
 GUI\ExportGUI.class
 GUI\ReceiptGUI$3.class
 GUI\ReceiptGUI.class

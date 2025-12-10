@@ -5,6 +5,7 @@ E:\New Folder\Quan_Ly_Kho_Lap\src\main\java\BUS\CustomerBUS.java
 E:\New Folder\Quan_Ly_Kho_Lap\src\main\java\BUS\ExportBUS.java
 E:\New Folder\Quan_Ly_Kho_Lap\src\main\java\BUS\ProductBUS.java
 E:\New Folder\Quan_Ly_Kho_Lap\src\main\java\BUS\ReceiptBUS.java
+E:\New Folder\Quan_Ly_Kho_Lap\src\main\java\BUS\SupplierBUS.java
 E:\New Folder\Quan_Ly_Kho_Lap\src\main\java\config\MongoDBConnection.java
 E:\New Folder\Quan_Ly_Kho_Lap\src\main\java\DAO\AdminDAO.java
 E:\New Folder\Quan_Ly_Kho_Lap\src\main\java\DAO\BrandDAO.java
@@ -38,4 +39,5 @@ E:\New Folder\Quan_Ly_Kho_Lap\src\main\java\GUI\ReceiptCreateDialog.java
 E:\New Folder\Quan_Ly_Kho_Lap\src\main\java\GUI\ReceiptDetailDialog.java
 E:\New Folder\Quan_Ly_Kho_Lap\src\main\java\GUI\ReceiptGUI.java
 E:\New Folder\Quan_Ly_Kho_Lap\src\main\java\GUI\StartsGUI.java
+E:\New Folder\Quan_Ly_Kho_Lap\src\main\java\GUI\SupplierGUI.java
 E:\New Folder\Quan_Ly_Kho_Lap\src\main\java\utils\OrderStatus.java

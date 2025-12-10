@@ -10,6 +10,8 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import java.awt.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.util.List;
 
 public class CustomerGUI extends JPanel {
@@ -22,8 +24,10 @@ public class CustomerGUI extends JPanel {
     private static final Color COLOR_BG = new Color(240, 242, 245);
     private static final Color COLOR_PRIMARY = new Color(66, 133, 244);
     private static final Color COLOR_GRAY = new Color(149, 165, 166);
+    private static final Color COLOR_WHITE = Color.WHITE;
+    private static final Font FONT_TITLE = new Font("Segoe UI", Font.BOLD, 24);
     private static final Font FONT_TEXT = new Font("Segoe UI", Font.PLAIN, 14);
-    private static final Font FONT_BOLD = new Font("Segoe UI", Font.BOLD, 13);
+    private static final Font FONT_BOLD = new Font("Segoe UI", Font.BOLD, 14);
 
     public CustomerGUI() {
         initUI();
@@ -31,44 +35,48 @@ public class CustomerGUI extends JPanel {
     }
 
     private void initUI() {
-        setLayout(new BorderLayout(10, 10));
+        setLayout(new BorderLayout(0, 20));
         setBackground(COLOR_BG);
-        setBorder(new EmptyBorder(20, 20, 20, 20));
+        setBorder(new EmptyBorder(20, 30, 30, 30));
 
-        JPanel pnlMain = new JPanel(new BorderLayout(0, 15));
-        pnlMain.setBackground(COLOR_BG);
-
-        pnlMain.add(createSearchPanel(), BorderLayout.NORTH);
-        pnlMain.add(createTableSection(), BorderLayout.CENTER);
-
-        add(pnlMain, BorderLayout.CENTER);
+        add(createTopPanel(), BorderLayout.NORTH);
+        add(createTableSection(), BorderLayout.CENTER);
     }
 
-    private JPanel createSearchPanel() {
-        JPanel pnlSearch = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 15));
-        pnlSearch.setBackground(Color.WHITE);
-        pnlSearch.setBorder(new LineBorder(new Color(220, 220, 220)));
+    private JPanel createTopPanel() {
+        JPanel pnlTop = new JPanel(new BorderLayout(20, 10));
+        pnlTop.setBackground(COLOR_BG);
 
-        JLabel lblSearch = new JLabel("Tìm kiếm SĐT:");
+        JLabel lblTitle = new JLabel("QUẢN LÝ KHÁCH HÀNG");
+        lblTitle.setFont(FONT_TITLE);
+        lblTitle.setForeground(new Color(44, 62, 80));
+
+        JPanel pnlSearch = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
+        pnlSearch.setBackground(COLOR_BG);
+
+        JLabel lblSearch = new JLabel("Tìm kiếm:");
         lblSearch.setFont(FONT_BOLD);
-
-        txtSearch = new JTextField(25);
+        
+        txtSearch = new JTextField(20);
         styleControl(txtSearch);
-        txtSearch.putClientProperty("JTextField.placeholderText", "Nhập số điện thoại khách hàng...");
+        txtSearch.putClientProperty("JTextField.placeholderText", "Nhập SĐT khách hàng...");
 
-        btnSearch = createBtn("Tìm Kiếm", COLOR_PRIMARY);
-        btnReload = createBtn("Làm Mới", COLOR_GRAY);
+        btnSearch = createBtn("Tìm", COLOR_PRIMARY);
+        btnReload = createBtn("Tải lại", COLOR_GRAY);
 
         pnlSearch.add(lblSearch);
         pnlSearch.add(txtSearch);
         pnlSearch.add(btnSearch);
         pnlSearch.add(btnReload);
 
-        return pnlSearch;
+        pnlTop.add(lblTitle, BorderLayout.WEST);
+        pnlTop.add(pnlSearch, BorderLayout.EAST);
+
+        return pnlTop;
     }
 
     private JScrollPane createTableSection() {
-        String[] headers = {"STT", "Họ Tên", "Số Điện Thoại", "Địa Chỉ"};
+        String[] headers = {"STT", "Họ và Tên", "Số Điện Thoại", "Địa Chỉ"};
         model = new DefaultTableModel(headers, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -79,8 +87,8 @@ public class CustomerGUI extends JPanel {
         styleTable(table);
 
         JScrollPane scrollPane = new JScrollPane(table);
-        scrollPane.getViewport().setBackground(Color.WHITE);
-        scrollPane.setBorder(BorderFactory.createLineBorder(new Color(230, 230, 230)));
+        scrollPane.getViewport().setBackground(COLOR_WHITE);
+        scrollPane.setBorder(BorderFactory.createLineBorder(new Color(230, 230, 230), 1));
         
         return scrollPane;
     }
@@ -88,6 +96,13 @@ public class CustomerGUI extends JPanel {
     private void initEvents() {
         btnSearch.addActionListener(e -> searchCustomer());
         btnReload.addActionListener(e -> reloadData());
+
+        this.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentShown(ComponentEvent e) {
+                reloadData();
+            }
+        });
     }
 
     private void searchCustomer() {
@@ -102,7 +117,8 @@ public class CustomerGUI extends JPanel {
 
     private void reloadData() {
         txtSearch.setText("");
-        model.setRowCount(0);
+        List<CustomerDTO> list = CustomerBUS.getInstance().getAllCustomers();
+        updateTable(list);
     }
 
     private void updateTable(List<CustomerDTO> list) {
@@ -127,39 +143,40 @@ public class CustomerGUI extends JPanel {
         btn.setForeground(Color.WHITE);
         btn.setFocusPainted(false);
         btn.setBorderPainted(false);
-        btn.setPreferredSize(new Dimension(110, 35));
+        btn.setPreferredSize(new Dimension(100, 38));
         btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
         return btn;
     }
 
     private void styleControl(JTextField txt) {
         txt.setFont(FONT_TEXT);
-        txt.setPreferredSize(new Dimension(200, 35));
+        txt.setPreferredSize(new Dimension(250, 38));
         txt.setBorder(BorderFactory.createCompoundBorder(
             new LineBorder(new Color(200, 200, 200)), 
-            new EmptyBorder(5, 8, 5, 8)
+            new EmptyBorder(5, 10, 5, 10)
         ));
     }
 
     private void styleTable(JTable table) {
-        table.setRowHeight(35);
+        table.setRowHeight(40);
         table.setFont(FONT_TEXT);
         table.setShowVerticalLines(false);
-        table.setGridColor(new Color(230, 230, 230));
+        table.setGridColor(new Color(240, 240, 240));
         table.setSelectionBackground(new Color(232, 240, 254));
         table.setSelectionForeground(Color.BLACK);
 
         JTableHeader header = table.getTableHeader();
         header.setFont(FONT_BOLD);
-        header.setBackground(new Color(245, 247, 250));
-        header.setForeground(new Color(50, 50, 50));
-        header.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, new Color(200, 200, 200)));
+        header.setBackground(new Color(248, 249, 250));
+        header.setForeground(new Color(44, 62, 80));
+        header.setBorder(BorderFactory.createMatteBorder(0, 0, 2, 0, new Color(230, 230, 230)));
+        header.setPreferredSize(new Dimension(header.getWidth(), 45));
         
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(JLabel.CENTER);
         table.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);
         table.getColumnModel().getColumn(0).setMaxWidth(60);
         table.getColumnModel().getColumn(2).setCellRenderer(centerRenderer);
-        table.getColumnModel().getColumn(2).setMaxWidth(150);
+        table.getColumnModel().getColumn(2).setMaxWidth(180);
     }
 }
