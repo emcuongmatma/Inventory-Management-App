@@ -21,12 +21,16 @@ public class SupplierGUI extends JPanel {
     private JTable table;
     private DefaultTableModel tableModel;
     private SupplierBUS supplierBUS;
-    private JButton btnAdd, btnClear, btnSearch;
+    
+    private JButton btnAdd, btnEdit, btnDelete, btnClear, btnSearch;
 
     private static final Color COLOR_BG = new Color(245, 247, 250);
     private static final Color COLOR_PRIMARY = new Color(52, 152, 219);
     private static final Color COLOR_SUCCESS = new Color(46, 204, 113);
+    private static final Color COLOR_WARNING = new Color(241, 196, 15);
+    private static final Color COLOR_DANGER = new Color(231, 76, 60);
     private static final Color COLOR_GRAY = new Color(149, 165, 166);
+    
     private static final Font FONT_BOLD = new Font("Segoe UI", Font.BOLD, 13);
     private static final Font FONT_PLAIN = new Font("Segoe UI", Font.PLAIN, 14);
 
@@ -35,7 +39,7 @@ public class SupplierGUI extends JPanel {
         initUI();
         initEvents();
         loadData();
-        resetForm();
+        resetForm(); 
     }
 
     private void initUI() {
@@ -53,61 +57,71 @@ public class SupplierGUI extends JPanel {
     }
 
     private JPanel createInputPanel() {
-        JPanel pnlInput = new JPanel(new BorderLayout(0, 15));
-        pnlInput.setBackground(Color.WHITE);
-        pnlInput.setBorder(new EmptyBorder(20, 20, 20, 20));
+        JPanel pnlWrapper = new JPanel(new BorderLayout(0, 15));
+        pnlWrapper.setBackground(Color.WHITE);
+        pnlWrapper.setBorder(new EmptyBorder(20, 20, 20, 20));
 
         JLabel lblTitle = new JLabel("QUẢN LÝ NHÀ CUNG CẤP");
-        lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 20));
+        lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 22));
         lblTitle.setForeground(new Color(44, 62, 80));
-        pnlInput.add(lblTitle, BorderLayout.NORTH);
+        pnlWrapper.add(lblTitle, BorderLayout.NORTH);
 
-        JPanel pnlFields = new JPanel(new GridLayout(2, 3, 20, 15));
-        pnlFields.setBackground(Color.WHITE);
+        JPanel pnlForm = new JPanel(new GridLayout(2, 3, 20, 15)); 
+        pnlForm.setBackground(Color.WHITE);
 
         txtCode = createStyledTextField();
-        txtCode.setEditable(false);
-        txtCode.setBackground(new Color(240, 240, 240));
+        txtCode.setEditable(false); 
+        txtCode.setBackground(new Color(245, 245, 245));
         
         txtName = createStyledTextField();
         txtEmail = createStyledTextField();
         txtAddress = createStyledTextField();
         txtPhone = createStyledTextField();
 
-        pnlFields.add(createFieldGroup("Mã NCC:", txtCode));
-        pnlFields.add(createFieldGroup("Tên Nhà Cung Cấp:", txtName));
-        pnlFields.add(createFieldGroup("Số Điện Thoại:", txtPhone));
-        pnlFields.add(createFieldGroup("Email:", txtEmail));
-        pnlFields.add(createFieldGroup("Địa Chỉ:", txtAddress));
-
-        JPanel pnlButtons = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
-        pnlButtons.setBackground(Color.WHITE);
-
-        btnAdd = createButton("Thêm NCC", COLOR_SUCCESS);
-        btnClear = createButton("Làm Mới", COLOR_GRAY);
-
-        pnlButtons.add(btnAdd);
-        pnlButtons.add(btnClear);
+        pnlForm.add(createFieldGroup("Mã NCC:", txtCode));
+        pnlForm.add(createFieldGroup("Tên Nhà Cung Cấp:", txtName));
+        pnlForm.add(createFieldGroup("Số Điện Thoại:", txtPhone));
         
-        pnlFields.add(pnlButtons);
+        pnlForm.add(createFieldGroup("Email:", txtEmail));
+        pnlForm.add(createFieldGroup("Địa Chỉ:", txtAddress));
+        pnlForm.add(new JLabel(""));
 
-        pnlInput.add(pnlFields, BorderLayout.CENTER);
+        pnlWrapper.add(pnlForm, BorderLayout.CENTER);
+
+        JPanel pnlActions = new JPanel(new BorderLayout());
+        pnlActions.setBackground(Color.WHITE);
+        pnlActions.setBorder(new EmptyBorder(10, 0, 0, 0));
 
         JPanel pnlSearch = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
         pnlSearch.setBackground(Color.WHITE);
-        pnlSearch.setBorder(new EmptyBorder(10, 0, 0, 0));
         
         txtSearch = createStyledTextField();
-        txtSearch.setPreferredSize(new Dimension(250, 35));
+        txtSearch.setPreferredSize(new Dimension(250, 38));
         btnSearch = createButton("Tìm kiếm", COLOR_PRIMARY);
         
         pnlSearch.add(new JLabel("Tìm kiếm: "));
         pnlSearch.add(txtSearch);
         pnlSearch.add(btnSearch);
+        
+        JPanel pnlButtons = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
+        pnlButtons.setBackground(Color.WHITE);
 
-        pnlInput.add(pnlSearch, BorderLayout.SOUTH);
+        btnAdd = createButton("Thêm", COLOR_SUCCESS);
+        btnEdit = createButton("Sửa", COLOR_WARNING);
+        btnDelete = createButton("Xóa", COLOR_DANGER);
+        btnClear = createButton("Làm Mới", COLOR_GRAY);
 
-        return pnlInput;
+        pnlButtons.add(btnAdd);
+        pnlButtons.add(btnEdit);
+        pnlButtons.add(btnDelete);
+        pnlButtons.add(btnClear);
+
+        pnlActions.add(pnlSearch, BorderLayout.WEST);
+        pnlActions.add(pnlButtons, BorderLayout.EAST);
+
+        pnlWrapper.add(pnlActions, BorderLayout.SOUTH);
+
+        return pnlWrapper;
     }
 
     private JPanel createTablePanel() {
@@ -133,58 +147,6 @@ public class SupplierGUI extends JPanel {
         return pnlTable;
     }
 
-    private JPanel createFieldGroup(String label, JComponent field) {
-        JPanel p = new JPanel(new BorderLayout(5, 5));
-        p.setBackground(Color.WHITE);
-        JLabel lbl = new JLabel(label);
-        lbl.setFont(FONT_BOLD);
-        p.add(lbl, BorderLayout.NORTH);
-        p.add(field, BorderLayout.CENTER);
-        return p;
-    }
-
-    private JTextField createStyledTextField() {
-        JTextField txt = new JTextField();
-        txt.setFont(FONT_PLAIN);
-        txt.setBorder(new CompoundBorder(
-                new LineBorder(new Color(200, 200, 200)),
-                new EmptyBorder(5, 10, 5, 10)
-        ));
-        return txt;
-    }
-
-    private JButton createButton(String text, Color bg) {
-        JButton btn = new JButton(text);
-        btn.setFont(FONT_BOLD);
-        btn.setBackground(bg);
-        btn.setForeground(Color.WHITE);
-        btn.setFocusPainted(false);
-        btn.setBorderPainted(false);
-        btn.setPreferredSize(new Dimension(120, 35));
-        btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        return btn;
-    }
-
-    private void styleTable(JTable table) {
-        table.setRowHeight(35);
-        table.setFont(FONT_PLAIN);
-        table.setShowVerticalLines(false);
-        table.setGridColor(new Color(230, 230, 230));
-        table.setSelectionBackground(new Color(232, 240, 254));
-        table.setSelectionForeground(Color.BLACK);
-
-        JTableHeader header = table.getTableHeader();
-        header.setFont(FONT_BOLD);
-        header.setBackground(new Color(245, 247, 250));
-        header.setForeground(new Color(50, 50, 50));
-        header.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, new Color(200, 200, 200)));
-        header.setPreferredSize(new Dimension(0, 40));
-
-        DefaultTableCellRenderer center = new DefaultTableCellRenderer();
-        center.setHorizontalAlignment(JLabel.CENTER);
-        table.getColumnModel().getColumn(0).setCellRenderer(center);
-    }
-
     private void initEvents() {
         table.addMouseListener(new MouseAdapter() {
             @Override
@@ -196,13 +158,22 @@ public class SupplierGUI extends JPanel {
                     txtEmail.setText(tableModel.getValueAt(row, 2).toString());
                     txtAddress.setText(tableModel.getValueAt(row, 3).toString());
                     txtPhone.setText(tableModel.getValueAt(row, 4).toString());
+                    
+                    btnAdd.setEnabled(false);
+                    btnAdd.setBackground(Color.LIGHT_GRAY);
+                    
+                    btnEdit.setEnabled(true);
+                    btnEdit.setBackground(COLOR_WARNING);
+                    
+                    btnDelete.setEnabled(true);
+                    btnDelete.setBackground(COLOR_DANGER);
                 }
             }
         });
 
         btnAdd.addActionListener(e -> {
             SupplierDTO s = new SupplierDTO();
-            s.setSupplierCode(txtCode.getText());
+            s.setSupplierCode(txtCode.getText()); 
             s.setName(txtName.getText());
             s.setEmail(txtEmail.getText());
             s.setAddress(txtAddress.getText());
@@ -214,6 +185,39 @@ public class SupplierGUI extends JPanel {
             if (result.contains("thành công")) {
                 loadData();
                 resetForm();
+            }
+        });
+
+        btnEdit.addActionListener(e -> {
+            SupplierDTO s = new SupplierDTO();
+            s.setSupplierCode(txtCode.getText()); 
+            s.setName(txtName.getText());
+            s.setEmail(txtEmail.getText());
+            s.setAddress(txtAddress.getText());
+            s.setPhone(txtPhone.getText());
+            
+            String result = supplierBUS.updateSupplier(s);
+            JOptionPane.showMessageDialog(this, result);
+            
+            if (result.contains("thành công")) {
+                loadData();
+                resetForm();
+            }
+        });
+
+        btnDelete.addActionListener(e -> {
+            String code = txtCode.getText();
+            int confirm = JOptionPane.showConfirmDialog(this, 
+                "Bạn có chắc muốn xóa nhà cung cấp: " + code + "?", 
+                "Xác nhận xóa", JOptionPane.YES_NO_OPTION);
+                
+            if (confirm == JOptionPane.YES_OPTION) {
+                String result = supplierBUS.deleteSupplier(code);
+                JOptionPane.showMessageDialog(this, result);
+                if (result.contains("thành công")) {
+                    loadData();
+                    resetForm();
+                }
             }
         });
 
@@ -256,6 +260,70 @@ public class SupplierGUI extends JPanel {
         txtAddress.setText("");
         txtPhone.setText("");
         txtSearch.setText("");
+        
+        btnAdd.setEnabled(true);
+        btnAdd.setBackground(COLOR_SUCCESS);
+        
+        btnEdit.setEnabled(false);
+        btnEdit.setBackground(Color.LIGHT_GRAY);
+        
+        btnDelete.setEnabled(false);
+        btnDelete.setBackground(Color.LIGHT_GRAY);
+        
         txtName.requestFocus();
+    }
+
+    private JPanel createFieldGroup(String label, JComponent field) {
+        JPanel p = new JPanel(new BorderLayout(5, 5));
+        p.setBackground(Color.WHITE);
+        JLabel lbl = new JLabel(label);
+        lbl.setFont(FONT_BOLD);
+        p.add(lbl, BorderLayout.NORTH);
+        p.add(field, BorderLayout.CENTER);
+        return p;
+    }
+
+    private JTextField createStyledTextField() {
+        JTextField txt = new JTextField();
+        txt.setFont(FONT_PLAIN);
+        txt.setPreferredSize(new Dimension(200, 35));
+        txt.setBorder(new CompoundBorder(
+                new LineBorder(new Color(200, 200, 200)),
+                new EmptyBorder(5, 10, 5, 10)
+        ));
+        return txt;
+    }
+
+    private JButton createButton(String text, Color bg) {
+        JButton btn = new JButton(text);
+        btn.setFont(FONT_BOLD);
+        btn.setBackground(bg);
+        btn.setForeground(Color.WHITE);
+        btn.setFocusPainted(false);
+        btn.setBorderPainted(false);
+        btn.setPreferredSize(new Dimension(110, 38));
+        btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        return btn;
+    }
+
+    private void styleTable(JTable table) {
+        table.setRowHeight(35);
+        table.setFont(FONT_PLAIN);
+        table.setShowVerticalLines(false);
+        table.setGridColor(new Color(230, 230, 230));
+        table.setSelectionBackground(new Color(232, 240, 254));
+        table.setSelectionForeground(Color.BLACK);
+
+        JTableHeader header = table.getTableHeader();
+        header.setFont(FONT_BOLD);
+        header.setBackground(new Color(245, 247, 250));
+        header.setForeground(new Color(50, 50, 50));
+        header.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, new Color(200, 200, 200)));
+        header.setPreferredSize(new Dimension(0, 40));
+
+        DefaultTableCellRenderer center = new DefaultTableCellRenderer();
+        center.setHorizontalAlignment(JLabel.CENTER);
+        table.getColumnModel().getColumn(0).setCellRenderer(center);
+        table.getColumnModel().getColumn(0).setMaxWidth(80);
     }
 }
