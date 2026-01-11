@@ -11,7 +11,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-public class LoginGUI extends JFrame {
+public class Application extends JFrame {
 
     private JTextField txtUser;
     private JPasswordField txtPass;
@@ -32,10 +32,10 @@ public class LoginGUI extends JFrame {
         } catch(Exception e) { 
             e.printStackTrace(); 
         }
-        new LoginGUI().setVisible(true);
+        new Application().setVisible(true);
     }
 
-    public LoginGUI() {
+    public Application() {
         initUI();
         initData();
         initEvents();

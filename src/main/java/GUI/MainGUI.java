@@ -34,20 +34,6 @@ public class MainGUI extends JFrame {
     private static final Font FONT_MENU = new Font("Segoe UI", Font.BOLD, 14);
     private static final Font FONT_LOGO = new Font("Segoe UI", Font.BOLD, 22);
 
-    public static void main(String[] args) {
-        try {
-            FlatLightLaf.setup();
-            UIManager.put("Button.arc", 10);
-            UIManager.put("Component.arc", 10);
-            UIManager.put("ScrollBar.width", 12);
-            UIManager.put("TableHeader.height", 40);
-            UIManager.put("Table.rowHeight", 35);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        EventQueue.invokeLater(() -> new MainGUI().setVisible(true));
-    }
-
     public MainGUI() {
         initUI();
     }

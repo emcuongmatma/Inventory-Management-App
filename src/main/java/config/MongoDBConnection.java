@@ -19,7 +19,7 @@ public class MongoDBConnection {
     private static MongoClient client;
     private static MongoDatabase database;
 
-    private static final String URI = "mongodb+srv://nvc05042k4_db_user:Ke6t59apzNbt0o6e@inventorymanagementapp.fi3jgcs.mongodb.net/?appName=InventoryManagementApp";
+    private static final String URI = "mongodb+srv://nvc05042k4_db_user:Cuong2k4@inventorymanagementapp.fi3jgcs.mongodb.net/?appName=InventoryManagementApp";
     private static final String DB_NAME = "iventory_db";
 
     public static MongoDatabase getDatabase() {
